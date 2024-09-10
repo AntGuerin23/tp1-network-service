@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tp1-network-service", "tp1-network-service\tp1-network-service.csproj", "{7E525676-66DA-4C9D-A08D-08579E884864}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tp1-network-service.CLI", "tp1-network-service.CLI\tp1-network-service.CLI.csproj", "{8940E51A-4F65-4559-8ABD-A40F5CA91AC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{7E525676-66DA-4C9D-A08D-08579E884864}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E525676-66DA-4C9D-A08D-08579E884864}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E525676-66DA-4C9D-A08D-08579E884864}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8940E51A-4F65-4559-8ABD-A40F5CA91AC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8940E51A-4F65-4559-8ABD-A40F5CA91AC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8940E51A-4F65-4559-8ABD-A40F5CA91AC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8940E51A-4F65-4559-8ABD-A40F5CA91AC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
