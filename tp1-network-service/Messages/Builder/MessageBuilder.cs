@@ -1,6 +1,6 @@
-namespace tp1_network_service.Messages;
+namespace tp1_network_service.Messages.Builder;
 
-public class MessageBuilder : IBuilder
+internal class MessageBuilder : IBuilder
 {
     private Message _message;
 

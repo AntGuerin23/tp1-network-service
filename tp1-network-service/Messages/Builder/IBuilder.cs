@@ -1,8 +1,6 @@
-using tp1_network_service.Messages;
+namespace tp1_network_service.Messages.Builder;
 
-namespace tp1_network_service.Messages;
-
-public interface IBuilder
+internal interface IBuilder
 { 
     public void Reset();
 
