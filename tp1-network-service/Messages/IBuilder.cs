@@ -1,14 +1,16 @@
 using tp1_network_service.Messages;
 
-namespace tp1_network_service.Packets;
+namespace tp1_network_service.Messages;
 
 public interface IBuilder
 { 
-    public void BuildPacket(string packetId);
+    public void Reset();
+
+    public void SetType();
     
     public void SetSource(int source);
     
     public void SetDestination(int destination);
 
-    public Packet GetResult();
+    public Message GetResult();
 }
