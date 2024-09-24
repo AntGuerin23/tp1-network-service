@@ -1,6 +1,6 @@
 namespace tp1_network_service.Enums;
 
-public enum MessageType
+internal enum MessageType
 {
     Connect = 0b00001111,
     Data = 0b00001011,
