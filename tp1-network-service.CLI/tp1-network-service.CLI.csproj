@@ -8,4 +8,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\tp1-network-service\tp1-network-service.csproj" />
+    </ItemGroup>
+
 </Project>
