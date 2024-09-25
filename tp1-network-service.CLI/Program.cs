@@ -1,12 +1,13 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using tp1_network_service.Messages;
+using System.Text;
+using tp1_network_service;
 
-FileManager fileManager = new FileManager("S_ecr.txt", "S_lec.txt");
+FileManager manager = new FileManager("S_lec.txt");
 
-// // Lire le fichier
-var line = fileManager.Read();
+var data = manager.Read();
 
-// Écrire sur le fichier
-fileManager.Write(line);
+FileManager manager2 = new FileManager("S_ecr.txt");
+manager2.Write(data);
+
 

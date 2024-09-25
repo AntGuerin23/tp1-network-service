@@ -1,28 +1,25 @@
-using System.Net.Mime;
 using System.Text;
 
-namespace tp1_network_service.Messages;
+namespace tp1_network_service;
 
-public class FileManager: FileAbstract
+public class FileManager
 {
-    private string path = Directory.GetCurrentDirectory() + "/File/";
-    private string fileInput;
-    private string fileOutput;
+    private string file { get; set; }
+    private string path = Environment.CurrentDirectory + "/Resources/";
 
-    public FileManager(string input, string output)
+    public FileManager(string file)
     {
-        this.fileInput = input;
-        this.fileOutput = output;
+        this.file = file;
     }
-    
-    public override void Write(byte[] content)
+
+    public void Write(byte[] content)
     {
         try
         {
-            if (Exist(path + fileInput))
+            if (Exist(path + file))
             {
                 var instruction = Encoding.UTF8.GetString(content, 0, content.Length);
-                File.AppendAllText(path + fileInput, string.Format("{0}{1}", instruction, Environment.NewLine));
+                File.AppendAllText(path + file, string.Format("{0}{1}", instruction, Environment.NewLine));
                 return;
             }
             
@@ -34,14 +31,14 @@ public class FileManager: FileAbstract
             throw;
         }
     }
-
-    public override byte[] Read()
+    
+    public byte[] Read()
     {
         try
         {
-            if (Exist(path + fileOutput))
+            if (Exist(path + file))
             {
-                var line = File.ReadLines(path + fileOutput).FirstOrDefault();
+                var line = File.ReadLines(path + file).FirstOrDefault();
                 if (line != null)
                 {
                     DeleteFirstLine();
@@ -60,16 +57,21 @@ public class FileManager: FileAbstract
         }
     }
 
+    private bool Exist(string fileName)
+    {
+        return File.Exists(fileName);
+    }
+    
     private void DeleteFirstLine()
     {
-        string[] lines = File.ReadAllLines(path + fileOutput);
+        string[] lines = File.ReadAllLines(path + file);
 
         if (lines.Length >= 1)
         {
             string[] newLines = new string[lines.Length - 1];
             Array.Copy(lines, 1, newLines, 0, newLines.Length);
 
-            File.WriteAllLines(path + fileOutput, newLines);
+            File.WriteAllLines(path + file, newLines);
         }
     }
 }
