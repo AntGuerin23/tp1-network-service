@@ -1,3 +1,5 @@
+using tp1_network_service.Enums;
+
 namespace tp1_network_service.Messages.Builder;
 
 internal class MessageBuilder : IBuilder
@@ -9,9 +11,9 @@ internal class MessageBuilder : IBuilder
         _message = new Message();
     }
 
-    public void SetType()
+    public void SetType(MessageType type)
     {
-        throw new NotImplementedException();
+        _message.Type = type;
     }
 
     public void SetSource(int source)
