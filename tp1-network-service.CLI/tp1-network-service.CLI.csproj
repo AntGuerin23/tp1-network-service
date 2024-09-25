@@ -12,4 +12,23 @@
       <ProjectReference Include="..\tp1-network-service\tp1-network-service.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Resources\L_ecr.txt" />
+      <EmbeddedResource Include="Resources\L_ecr.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Resources\L_lec.txt" />
+      <EmbeddedResource Include="Resources\L_lec.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Resources\S_ecr.txt" />
+      <EmbeddedResource Include="Resources\S_ecr.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Resources\S_lec.txt" />
+      <EmbeddedResource Include="Resources\S_lec.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+    </ItemGroup>
+
 </Project>

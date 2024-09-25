@@ -1,7 +1,9 @@
+using tp1_network_service.Messages;
+
 namespace tp1_network_service;
 
-public abstract class Layer
+internal abstract class Layer
 {
-    public abstract void StartListening();
-    internal abstract void HandleNewMessage();
+    public abstract void StartListening(string filesPath);
+    internal abstract void HandleNewMessage(Message message);
 }
