@@ -2,24 +2,16 @@ using System.Text;
 
 namespace tp1_network_service;
 
-public class FileManager
+public class FileManager (string filePath)
 {
-    private string file { get; set; }
-    private string path = Environment.CurrentDirectory + "/Resources/";
-
-    public FileManager(string file)
-    {
-        this.file = file;
-    }
-
     public void Write(byte[] content)
     {
         try
         {
-            if (Exist(path + file))
+            if (Exist(filePath))
             {
                 var instruction = Encoding.UTF8.GetString(content, 0, content.Length);
-                File.AppendAllText(path + file, string.Format("{0}{1}", instruction, Environment.NewLine));
+                File.AppendAllText(filePath, string.Format("{0}{1}", instruction, Environment.NewLine));
                 return;
             }
             
@@ -36,24 +28,24 @@ public class FileManager
     {
         try
         {
-            if (Exist(path + file))
+            if (Exist(filePath))
             {
-                var line = File.ReadLines(path + file).FirstOrDefault();
+                var line = File.ReadLines(filePath).FirstOrDefault();
                 if (line != null)
                 {
                     DeleteFirstLine();
                     return Encoding.UTF8.GetBytes(line);
                 }
-                return new byte[] { };
+                return [];
             }
 
-            Console.WriteLine("Aucune action");
-            return new byte[] { };
+            Console.WriteLine($"Aucune action {filePath}");
+            return [];
         }
         catch (Exception e)
         {
             Console.WriteLine("Une erreur en survenue lors de la lecture");
-            return null;
+            return [];
         }
     }
 
@@ -64,14 +56,12 @@ public class FileManager
     
     private void DeleteFirstLine()
     {
-        string[] lines = File.ReadAllLines(path + file);
+        var lines = File.ReadAllLines(filePath);
 
-        if (lines.Length >= 1)
-        {
-            string[] newLines = new string[lines.Length - 1];
-            Array.Copy(lines, 1, newLines, 0, newLines.Length);
+        if (lines.Length < 1) return;
+        var newLines = new string[lines.Length - 1];
+        Array.Copy(lines, 1, newLines, 0, newLines.Length);
 
-            File.WriteAllLines(path + file, newLines);
-        }
+        File.WriteAllLines(filePath, newLines);
     }
 }

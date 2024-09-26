@@ -13,20 +13,28 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Resources\L_ecr.txt" />
-      <EmbeddedResource Include="Resources\L_ecr.txt">
+      <None Remove="Resources\L_ECR.txt" />
+      <EmbeddedResource Include="Resources\L_ECR.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </EmbeddedResource>
-      <None Remove="Resources\L_lec.txt" />
-      <EmbeddedResource Include="Resources\L_lec.txt">
+      <None Remove="Resources\L_LEC.txt" />
+      <EmbeddedResource Include="Resources\L_LEC.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </EmbeddedResource>
-      <None Remove="Resources\S_ecr.txt" />
-      <EmbeddedResource Include="Resources\S_ecr.txt">
+      <None Remove="Resources\R_ECR_T_LEC.txt" />
+      <EmbeddedResource Include="Resources\R_ECR_T_LEC.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </EmbeddedResource>
-      <None Remove="Resources\S_lec.txt" />
-      <EmbeddedResource Include="Resources\S_lec.txt">
+      <None Remove="Resources\S_ECR.txt" />
+      <EmbeddedResource Include="Resources\S_ECR.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Resources\S_LEC.txt" />
+      <EmbeddedResource Include="Resources\S_LEC.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Resources\T_ECR_R_LEC.txt" />
+      <EmbeddedResource Include="Resources\T_ECR_R_LEC.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </EmbeddedResource>
     </ItemGroup>
