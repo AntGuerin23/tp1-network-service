@@ -4,5 +4,5 @@ namespace tp1_network_service.Messages;
 
 internal class ConnectMessage : Message
 {
-    private MessageType type;
+    public ConnectMessage(Message message) : base(message) { }
 }
