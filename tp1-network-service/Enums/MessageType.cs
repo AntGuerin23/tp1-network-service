@@ -2,7 +2,8 @@ namespace tp1_network_service.Enums;
 
 internal enum MessageType
 {
-    Connect = 0b00001111,
-    Data = 0b00001011,
-    Disconnect = 0b00010011
+    ConnectRequest = 0b00001011,
+    ConnectConfirmation = 0b00001111,
+    Disconnect = 0b00010011,
+    Data = -1, //The "type" byte of a data packet is never the same
 }

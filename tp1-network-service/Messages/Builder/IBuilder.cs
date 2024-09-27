@@ -8,9 +8,11 @@ internal interface IBuilder
 
     public void SetType(MessageType type);
     
-    public void SetSource(int source);
+    public void SetPrimitive (MessagePrimitive primitive);
     
-    public void SetDestination(int destination);
+    public void SetSource(byte source);
+    
+    public void SetDestination(byte destination);
 
     public Message GetResult();
 }

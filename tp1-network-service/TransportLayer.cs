@@ -11,6 +11,7 @@ internal class TransportLayer : Layer
 
     internal override void HandleNewMessage(Message message)
     {
-        
+        //TODO : Faudrait faire du polymorphisme avec message, créer genre fonction Message.HandleTransport qui est override dans chacun des enfants avec un comportement différent
+        //sinon faut faire un switch...
     }
 }

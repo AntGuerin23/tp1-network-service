@@ -2,18 +2,22 @@ using tp1_network_service.Enums;
 
 namespace tp1_network_service.Messages;
 
-internal class Message
+internal abstract class Message
 {
-    public string? Primitive { get; set; }
-    public int ConnexionNumber { get; set; }
+    public MessagePrimitive Primitive { get; set; }
+    public int ConnectionNumber { get; set; }
     public MessageType Type { get; set; }
-    public int? Source { get; set; }
-    public int? Destination { get; set; }
-
-    public Message()
+    public byte? Source { get; set; }
+    public byte? Destination { get; set; }
+    
+    protected Message(Message message) //Copy constructor used by builder
     {
-        ConnexionNumber = new Random().Next(1, 1001);
-        Source = null;
-        Destination = null;
+        Primitive = message.Primitive;
+        ConnectionNumber = message.ConnectionNumber;
+        Type = message.Type;
+        Source = message.Source;
+        Destination = message.Destination;
     }
+
+    protected Message() { }
 }
