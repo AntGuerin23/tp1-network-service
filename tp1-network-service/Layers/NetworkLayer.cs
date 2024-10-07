@@ -3,7 +3,7 @@ using tp1_network_service.Messages;
 
 namespace tp1_network_service.Layers;
 
-public class NetworkLayer (FilePaths dataLinkPaths, FilePaths transportPaths) : Layer 
+public class NetworkLayer (FilePaths dataLinkPaths, FilePaths transportPaths) : Layer
 {
     public override void StartListening()
     {
@@ -16,20 +16,32 @@ public class NetworkLayer (FilePaths dataLinkPaths, FilePaths transportPaths) : 
         transportInputThread.Start();
     }
 
-    internal override void HandleNewMessage(Message message)
+    protected override void HandleNewMessage(byte[] data, string fileName)
     {
-        throw new NotImplementedException();
+        if (fileName.Equals(dataLinkPaths.Input))
+        {
+            HandleRawMessageFromDataLink(data);
+        } else if (fileName.Equals(transportPaths.Input))
+        {
+            HandleRawMessageFromTransport(data);
+        }
+        // Console.WriteLine($"({Environment.CurrentManagedThreadId}) Network layer received : : {Encoding.Default.GetString(data)}");
+        // // TEST BELOW (Open terminal and echo "AAABBB" into L_LEC.txt to simulate a transfer between Network and Transport
+        // // L_LEC -> NetworkLayer -> TransportLayer
+        // if (Encoding.Default.GetString(data) == "AAABBB")
+        // {
+        //     var fileManager = new FileManager(transportPaths.Output);
+        //     fileManager.Write(Encoding.UTF8.GetBytes("AAABBB RESPONSE"));
+        // }
     }
 
-    protected override void HandleRawMessage(byte[] data)
+    private void HandleRawMessageFromTransport(byte[] data)
     {
-        Console.WriteLine($"({Environment.CurrentManagedThreadId}) Network layer received : : {Encoding.Default.GetString(data)}");
-        // TEST BELOW (Open terminal and echo "AAABBB" into L_LEC.txt to simulate a transfer between Network and Transport
-        // L_LEC -> NetworkLayer -> TransportLayer
-        if (Encoding.Default.GetString(data) == "AAABBB")
-        {
-            var fileManager = new FileManager(transportPaths.Output);
-            fileManager.Write(Encoding.UTF8.GetBytes("AAABBB RESPONSE"));
-        }
+        Console.WriteLine($"Received {Encoding.Default.GetString(data)} , From Transport Layer");
+    }
+
+    private void HandleRawMessageFromDataLink(byte[] data)
+    {
+        Console.WriteLine($"Received {Encoding.Default.GetString(data)} , From DataLink Layer"); 
     }
 }

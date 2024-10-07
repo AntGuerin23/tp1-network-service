@@ -7,8 +7,7 @@ public abstract class Layer
     protected readonly CancellationTokenSource InputThreadsCancelToken = new();
     protected readonly List<Thread> InputListenerThreads = [];
     public abstract void StartListening();
-    internal abstract void HandleNewMessage(Message message);
-    protected abstract void HandleRawMessage(byte[] data);
+    protected abstract void HandleNewMessage(byte[] data, string fileName);
 
     public void StopListening()
     {
@@ -32,7 +31,7 @@ public abstract class Layer
             var data = fileManager.Read();
             if (data.Length != 0)
             {
-                new Thread(() => HandleRawMessage(data)).Start();
+                new Thread(() => HandleNewMessage(data, filePath)).Start();
             }
             Thread.Sleep(1000);
         }
