@@ -1,4 +1,5 @@
 using System.Text;
+using tp1_network_service.Enums;
 using tp1_network_service.Messages;
 using tp1_network_service.Messages.Builder;
 using tp1_network_service.Serialization;
@@ -8,15 +9,8 @@ namespace tp1_network_service.Layers;
 
 public class TransportLayer(FilePaths upperLayerPaths, FilePaths networkPaths) : Layer
 {
-    private enum ConnectionStatus
-    {
-        Waiting = 0,
-        Confirmed = 1
-    }
-    
-    private readonly Dictionary<int, ConnectionStatus> _connectionNumbers = new();
-    private readonly object _connectionNumbersLock = new();
-    
+    private readonly TransportConnectionsHandler _connectionsHandler = new();
+
     public override void StartListening()
     {
         var upperLayerInputThread =
@@ -41,48 +35,76 @@ public class TransportLayer(FilePaths upperLayerPaths, FilePaths networkPaths) :
 
     private void HandleRawMessageFromUpperLayer(byte[] data)
     {
-        var connectionId = CreateWaitingConnection();
-        var messageBuilder = new MessageBuilder();
-        var message = messageBuilder.SetConnectionNumber((byte)connectionId).SetSource(127).SetDestination(128)
-            .ToConnectMessage().GetResult();
-        var fileManager = new FileManager(networkPaths.Output);
-        fileManager.Write(MessageSerializer.Serialize(message)); 
+        var connectMessage = InitNewConnection();
+        _connectionsHandler.StoreDataForConfirmedConnection(connectMessage.ConnectionNumber, data);
+        SendMessageToDataLinkLayer(connectMessage);
     }
     
     private void HandleRawMessageFromNetwork(byte[] data)
     {
         Console.WriteLine($"Received {Encoding.Default.GetString(data)} , From Network Layer");
-    }
-
-    private void ConfirmWaitingConnection(int connectionId)
-    {
-        lock (_connectionNumbersLock)
+        var message = MessageSerializer.Deserialize(data, true);
+        if (message is ConnectMessage connectMessage)
         {
-            _connectionNumbers[connectionId] = ConnectionStatus.Confirmed;
+            HandleConnectMessage(connectMessage);
         }
     }
 
-    private int CreateWaitingConnection()
+    private ConnectMessage InitNewConnection()
     {
-        var connectionId = CreateNewConnectionId();
-        lock (_connectionNumbersLock)
-        {
-            _connectionNumbers[connectionId] = ConnectionStatus.Waiting;
-        }
-        return connectionId;
+        var connectionId = _connectionsHandler.CreateWaitingConnection();
+        return CreateConnectMessage(connectionId);
     }
 
-    private int CreateNewConnectionId()
+    private void SendMessageToDataLinkLayer(Message message)
     {
-        Random random = new();
-        int connectionId;
-        lock (_connectionNumbersLock)
+        var fileManager = new FileManager(networkPaths.Output);
+        fileManager.Write(MessageSerializer.Serialize(message)); 
+    }
+
+    private ConnectMessage CreateConnectMessage(int connectionId)
+    {
+        var messageBuilder = new MessageBuilder();
+        return (ConnectMessage) messageBuilder.SetConnectionNumber((byte)connectionId)
+                                              .SetSource(127)
+                                              .SetDestination(128)
+                                              .ToConnectMessage()
+                                              .GetResult();
+    }
+    
+    private void HandleConnectMessage(ConnectMessage message)
+    {
+        switch (message.Primitive)
         {
-            do
-            {
-                connectionId = random.Next(0, 256);
-            } while (_connectionNumbers.ContainsKey(connectionId));
+            case MessagePrimitive.Conf:
+                HandleConnectConfirmationMessage(message);
+                break;
+            case MessagePrimitive.Req:
+                break;
+            case MessagePrimitive.Ind:
+                break;
+            case MessagePrimitive.Resp:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
-        return connectionId;
+    }
+
+    private void HandleConnectConfirmationMessage(ConnectMessage message)
+    {
+        _connectionsHandler.ConfirmWaitingConnection(message.ConnectionNumber);
+        var pendingData = _connectionsHandler.GetPendingData(message.ConnectionNumber);
+        
+        if (pendingData.Length <= 0) return;
+        
+        var messageBuilder = new MessageBuilder();
+        // TODO : Change bottom section for segmentation
+        var segInfo = new SegmentationInfo(2);
+        var dataMessage = messageBuilder.SetConnectionNumber((byte) message.ConnectionNumber)
+            .SetSource((byte) message.Source) //TODO : Null check
+            .SetDestination((byte) message.Destination) //TODO : Null check
+            .ToDataMessage(segInfo, pendingData)
+            .GetResult();
+        SendMessageToDataLinkLayer(dataMessage);
     }
 }
