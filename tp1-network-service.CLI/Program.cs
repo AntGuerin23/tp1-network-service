@@ -2,23 +2,29 @@
 
 
 var path = Environment.CurrentDirectory + "/Resources";
-var networkLayer = new NetworkLayer(
-    new FilePaths($"{path}/L_LEC.txt", $"{path}/L_ECR.txt"),
-    new FilePaths($"{path}/T_ECR_R_LEC.txt", $"{path}/R_ECR_T_LEC.txt")
-);
-var transportLayer = new TransportLayer(
-    new FilePaths($"{path}/S_LEC.txt", $"{path}/S_ECR.txt"),
-    new FilePaths($"{path}/R_ECR_T_LEC.txt", $"{path}/T_ECR_R_LEC.txt")
-);
+// var networkLayer = new NetworkLayer(
+//     new FilePaths($"{path}/L_LEC.txt", $"{path}/L_ECR.txt"),
+//     new FilePaths($"{path}/T_ECR_R_LEC.txt", $"{path}/R_ECR_T_LEC.txt")
+// );
+// var transportLayer = new TransportLayer(
+//     new FilePaths($"{path}/S_LEC.txt", $"{path}/S_ECR.txt"),
+//     new FilePaths($"{path}/R_ECR_T_LEC.txt", $"{path}/T_ECR_R_LEC.txt")
+// );
+
+NetworkLayer.Instance.DataLinkPaths = new FilePaths($"{path}/L_LEC.txt", $"{path}/L_ECR.txt");
+NetworkLayer.Instance.TransportPaths = new FilePaths($"{path}/T_ECR_R_LEC.txt", $"{path}/R_ECR_T_LEC.txt");
+
+TransportLayer.Instance.UpperLayerPaths = new FilePaths($"{path}/S_LEC.txt", $"{path}/S_ECR.txt");
+TransportLayer.Instance.NetworkPaths = new FilePaths($"{path}/R_ECR_T_LEC.txt", $"{path}/T_ECR_R_LEC.txt");
 
 try
 {
-    networkLayer.StartListening();
-    transportLayer.StartListening();
+    NetworkLayer.Instance.StartListening();
+    TransportLayer.Instance.StartListening();
 }
 catch (Exception e)
 {
     Console.WriteLine("An error occured : " + e.Message);
-    networkLayer.StopListening();
-    transportLayer.StopListening();
+    NetworkLayer.Instance.StopListening();
+    TransportLayer.Instance.StopListening();
 }

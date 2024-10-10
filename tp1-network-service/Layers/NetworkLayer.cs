@@ -1,47 +1,75 @@
 using System.Text;
+using tp1_network_service.Enums;
 using tp1_network_service.Messages;
+using tp1_network_service.Serialization;
 
 namespace tp1_network_service.Layers;
 
-public class NetworkLayer (FilePaths dataLinkPaths, FilePaths transportPaths) : Layer
+public class NetworkLayer : Layer
 {
+    private static NetworkLayer? _instance;
+    private (int, byte)? _waitingConnectionNumberAndDestination;
+    private object _waitingConnectionNumberAndDestinationLock = new();
+    public FilePaths DataLinkPaths { private get; set; }
+    public FilePaths TransportPaths { private get; set; }
+
+    public static NetworkLayer Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = new NetworkLayer();
+            }
+
+            return _instance;
+        }
+    }
+
     public override void StartListening()
     {
-        var dataLinkInputThread = 
-            new Thread(() => ListenInputFile(dataLinkPaths.Input, InputThreadsCancelToken.Token));
+        var dataLinkInputThread =
+            new Thread(() => ListenInputFile(DataLinkPaths.Input, InputThreadsCancelToken.Token));
         var transportInputThread =
-            new Thread(() => ListenInputFile(transportPaths.Input, InputThreadsCancelToken.Token));
+            new Thread(() => ListenInputFile(TransportPaths.Input, InputThreadsCancelToken.Token));
         InputListenerThreads.AddRange([dataLinkInputThread, transportInputThread]);
         dataLinkInputThread.Start();
         transportInputThread.Start();
     }
 
+    internal (int, byte)? GetAndResetWaitingConnectionNumberAndDestination()
+    {
+        lock (_waitingConnectionNumberAndDestinationLock)
+        {
+            var returnValue = _waitingConnectionNumberAndDestination;
+            _waitingConnectionNumberAndDestination = null;
+            return returnValue;
+        }
+    }
+
+    internal void SetWaitingConnectionNumberAndDestination(int connectionNumber, byte destination)
+    {
+        lock (_waitingConnectionNumberAndDestinationLock)
+        {
+            _waitingConnectionNumberAndDestination = (connectionNumber, destination);
+        }
+    }
+
+    internal void SendMessageToTransportLayer(Message message)
+    {
+        var fileManager = new FileManager(TransportPaths.Output);
+        fileManager.Write(MessageSerializer.Serialize(message));
+    }
+
+    internal void SendMessageToDataLinkLayer(Message message)
+    {
+        var fileManager = new FileManager(DataLinkPaths.Output);
+        fileManager.Write(MessageSerializer.Serialize(message));
+    }
+
     protected override void HandleNewMessage(byte[] data, string fileName)
     {
-        if (fileName.Equals(dataLinkPaths.Input))
-        {
-            HandleRawMessageFromDataLink(data);
-        } else if (fileName.Equals(transportPaths.Input))
-        {
-            HandleRawMessageFromTransport(data);
-        }
-        // Console.WriteLine($"({Environment.CurrentManagedThreadId}) Network layer received : : {Encoding.Default.GetString(data)}");
-        // // TEST BELOW (Open terminal and echo "AAABBB" into L_LEC.txt to simulate a transfer between Network and Transport
-        // // L_LEC -> NetworkLayer -> TransportLayer
-        // if (Encoding.Default.GetString(data) == "AAABBB")
-        // {
-        //     var fileManager = new FileManager(transportPaths.Output);
-        //     fileManager.Write(Encoding.UTF8.GetBytes("AAABBB RESPONSE"));
-        // }
-    }
-
-    private void HandleRawMessageFromTransport(byte[] data)
-    {
-        Console.WriteLine($"Received {Encoding.Default.GetString(data)} , From Transport Layer");
-    }
-
-    private void HandleRawMessageFromDataLink(byte[] data)
-    {
-        Console.WriteLine($"Received {Encoding.Default.GetString(data)} , From DataLink Layer"); 
+        var message = MessageSerializer.Deserialize(data, false);
+        message.Handle();
     }
 }

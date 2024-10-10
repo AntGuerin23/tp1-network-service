@@ -28,19 +28,19 @@ internal class MessageBuilder
         return this;
     }
     
-    public MessageBuilder SetConnectionNumber(byte connectionNumber)
+    public MessageBuilder SetConnectionNumber(int connectionNumber)
     {
         _message.ConnectionNumber = connectionNumber;
         return this;
     }
 
-    public MessageBuilder SetSource(byte source)
+    public MessageBuilder SetSource(byte? source)
     {
         _message.Source = source;
         return this;
     }
 
-    public MessageBuilder SetDestination(byte destination)
+    public MessageBuilder SetDestination(byte? destination)
     {
         _message.Destination = destination;
         return this;
@@ -71,5 +71,11 @@ internal class MessageBuilder
     }
     
     // Needed because a message is abstract, and the actual type (connect, data, disconnect) is only known at the end of the building process 
-    private class BuildableMessage : Message;
+    private class BuildableMessage : Message
+    {
+        public override void Handle(bool isHandledByTransport = false)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

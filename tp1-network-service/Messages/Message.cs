@@ -20,4 +20,6 @@ internal abstract class Message
     }
 
     protected Message() { }
+
+    public abstract void Handle(bool isHandledByTransport = false);
 }

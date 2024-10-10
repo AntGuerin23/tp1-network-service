@@ -1,13 +1,28 @@
 using tp1_network_service.Enums;
+using tp1_network_service.Layers;
 
 namespace tp1_network_service.Messages;
 
-internal class DisconnectMessage : Message
+internal class DisconnectMessage(Message message, DisconnectReason reason) : Message(message)
 {
-    public DisconnectReason Reason { get; set; }
+    public DisconnectReason Reason { get; set; } = reason;
 
-    public DisconnectMessage(Message message, DisconnectReason reason) : base(message)
+    private void HandleFromTransport()
     {
-        Reason = reason;
+        TransportLayer.Instance.ConnectionsHandler.RemoveConnection(ConnectionNumber);
+    }
+
+    private void HandleFromNetwork()
+    {
+    }
+
+    public override void Handle(bool isHandledByTransport = false)
+    {
+        if (isHandledByTransport)
+        {
+            HandleFromTransport();
+            return;
+        }
+        HandleFromNetwork();
     }
 }

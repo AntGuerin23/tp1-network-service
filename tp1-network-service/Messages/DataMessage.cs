@@ -10,4 +10,9 @@ internal class DataMessage : Message
         SegmentationInfo = segInfo;
         Data = data;
     }
+
+    public override void Handle(bool isHandledByTransport = false)
+    {
+        throw new NotImplementedException();
+    }
 }

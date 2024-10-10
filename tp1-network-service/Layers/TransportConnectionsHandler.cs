@@ -37,11 +37,23 @@ public class TransportConnectionsHandler
         lock (_pendingDataLock)
         {
             if (!_pendingData.TryGetValue(connectionNumber, out var value) ||
-                value.Length <= 0) return Array.Empty<byte>();
+                value.Length <= 0) return [];
 
             _pendingData.Remove(connectionNumber);
 
             return value;
+        }
+    }
+
+    public void RemoveConnection(int connectionNumber)
+    {
+        lock (_connectionNumbersLock)
+        {
+            _connectionNumbers.Remove(connectionNumber);
+        }
+        lock (_pendingDataLock)
+        {
+            _pendingData.Remove(connectionNumber);
         }
     }
 
