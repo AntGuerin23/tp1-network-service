@@ -25,13 +25,12 @@ public abstract class Layer
     protected void ListenInputFile(string filePath, CancellationToken cancellationToken)
     {
         Console.WriteLine($"Started listening on thread {Environment.CurrentManagedThreadId}");
-        var fileManager = new FileManager(filePath);
         while (!cancellationToken.IsCancellationRequested)
         {
-            var data = fileManager.Read();
+            var data = FileManager.Read(filePath);
             if (data.Length != 0)
             {
-                new Thread(() => HandleNewMessage(data, filePath)).Start();
+                new Thread(() => HandleNewMessage(data, filePath)).Start(); //TODO : Seulement network devrait être asynchrone 
             }
             Thread.Sleep(1000);
         }

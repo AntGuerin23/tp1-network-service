@@ -2,13 +2,13 @@ using System.Text;
 
 namespace tp1_network_service;
 
-public class FileManager (string filePath)
+public class FileManager ()
 {
-    public void Write(byte[] content)
+    public static void Write(byte[] content, string filePath)
     {
         try
         {
-            if (Exist(filePath))
+            if (Exists(filePath))
             {
                 var instruction = Encoding.UTF8.GetString(content, 0, content.Length);
                 File.AppendAllText(filePath, string.Format("{0}{1}", instruction, Environment.NewLine));
@@ -24,16 +24,16 @@ public class FileManager (string filePath)
         }
     }
     
-    public byte[] Read()
+    public static byte[] Read(string filePath)
     {
         try
         {
-            if (Exist(filePath))
+            if (Exists(filePath))
             {
                 var line = File.ReadLines(filePath).FirstOrDefault();
                 if (line != null)
                 {
-                    DeleteFirstLine();
+                    DeleteFirstLine(filePath);
                     return Encoding.UTF8.GetBytes(line);
                 }
                 return [];
@@ -49,12 +49,12 @@ public class FileManager (string filePath)
         }
     }
 
-    private bool Exist(string fileName)
+    private static bool Exists(string fileName)
     {
         return File.Exists(fileName);
     }
     
-    private void DeleteFirstLine()
+    private static void DeleteFirstLine(string filePath)
     {
         var lines = File.ReadAllLines(filePath);
 

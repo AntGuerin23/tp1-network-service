@@ -4,74 +4,74 @@ namespace tp1_network_service.Messages.Builder;
 
 internal class MessageBuilder
 {
-    private Message _message;
+    private Primitive _primitive;
 
     public MessageBuilder()
     {
-        _message = new BuildableMessage();
+        _primitive = new BuildablePrimitive();
     }
 
     public MessageBuilder Reset()
     {
-        _message = new BuildableMessage();
+        _primitive = new BuildablePrimitive();
         return this;
     }
     
-    public Message GetResult()
+    public Primitive GetResult()
     {
-        return _message;
+        return _primitive;
     }
 
-    public MessageBuilder SetType(MessageType type)
+    public MessageBuilder SetType(PrimitiveType type)
     {
-        _message.Type = type;
+        _primitive.Type = type;
         return this;
     }
     
     public MessageBuilder SetConnectionNumber(int connectionNumber)
     {
-        _message.ConnectionNumber = connectionNumber;
+        _primitive.ConnectionNumber = connectionNumber;
         return this;
     }
 
     public MessageBuilder SetSource(byte? source)
     {
-        _message.Source = source;
+        _primitive.Source = source;
         return this;
     }
 
     public MessageBuilder SetDestination(byte? destination)
     {
-        _message.Destination = destination;
+        _primitive.Destination = destination;
         return this;
     }
 
-    public MessageBuilder SetPrimitive(MessagePrimitive primitive)
+    public MessageBuilder SetType(MessagePrimitive primitive)
     {
-        _message.Primitive = primitive;
+        _primitive.Primitive = primitive;
         return this;
     }
     
     public MessageBuilder ToConnectMessage()
     {
-        _message = new ConnectMessage(_message);
+        _primitive = new ConnectPrimitive(_primitive);
         return this;
     }
 
     public MessageBuilder ToDataMessage(SegmentationInfo segInfo, byte[] data)
     {
-        _message = new DataMessage(_message, segInfo, data);
+        _primitive = new DataPrimitive(_primitive, segInfo, data);
         return this;
     }
     
     public MessageBuilder ToDisconnectMessage(DisconnectReason reason)
     {
-        _message = new DisconnectMessage(_message, reason);
+        _primitive = new DisconnectPrimitive(_primitive, reason);
         return this;
     }
     
     // Needed because a message is abstract, and the actual type (connect, data, disconnect) is only known at the end of the building process 
-    private class BuildableMessage : Message
+    private class BuildablePrimitive : Primitive
     {
         public override void Handle(bool isHandledByTransport = false)
         {

@@ -12,10 +12,7 @@ var path = Environment.CurrentDirectory + "/Resources";
 // );
 
 NetworkLayer.Instance.DataLinkPaths = new FilePaths($"{path}/L_LEC.txt", $"{path}/L_ECR.txt");
-NetworkLayer.Instance.TransportPaths = new FilePaths($"{path}/T_ECR_R_LEC.txt", $"{path}/R_ECR_T_LEC.txt");
-
 TransportLayer.Instance.UpperLayerPaths = new FilePaths($"{path}/S_LEC.txt", $"{path}/S_ECR.txt");
-TransportLayer.Instance.NetworkPaths = new FilePaths($"{path}/R_ECR_T_LEC.txt", $"{path}/T_ECR_R_LEC.txt");
 
 try
 {

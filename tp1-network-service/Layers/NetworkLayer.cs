@@ -11,7 +11,6 @@ public class NetworkLayer : Layer
     private (int, byte)? _waitingConnectionNumberAndDestination;
     private object _waitingConnectionNumberAndDestinationLock = new();
     public FilePaths DataLinkPaths { private get; set; }
-    public FilePaths TransportPaths { private get; set; }
 
     public static NetworkLayer Instance
     {
@@ -28,13 +27,13 @@ public class NetworkLayer : Layer
 
     public override void StartListening()
     {
-        var dataLinkInputThread =
-            new Thread(() => ListenInputFile(DataLinkPaths.Input, InputThreadsCancelToken.Token));
-        var transportInputThread =
-            new Thread(() => ListenInputFile(TransportPaths.Input, InputThreadsCancelToken.Token));
-        InputListenerThreads.AddRange([dataLinkInputThread, transportInputThread]);
-        dataLinkInputThread.Start();
-        transportInputThread.Start();
+        // var dataLinkInputThread =
+        //     new Thread(() => ListenInputFile(DataLinkPaths.Input, InputThreadsCancelToken.Token));
+        // var transportInputThread =
+        //     new Thread(() => ListenInputFile(TransportPaths.Input, InputThreadsCancelToken.Token));
+        // InputListenerThreads.AddRange([dataLinkInputThread, transportInputThread]);
+        // dataLinkInputThread.Start();
+        // transportInputThread.Start();
     }
 
     internal (int, byte)? GetAndResetWaitingConnectionNumberAndDestination()
@@ -55,16 +54,9 @@ public class NetworkLayer : Layer
         }
     }
 
-    internal void SendMessageToTransportLayer(Message message)
+    internal void SendMessageToDataLinkLayer(Primitive primitive)
     {
-        var fileManager = new FileManager(TransportPaths.Output);
-        fileManager.Write(MessageSerializer.Serialize(message));
-    }
-
-    internal void SendMessageToDataLinkLayer(Message message)
-    {
-        var fileManager = new FileManager(DataLinkPaths.Output);
-        fileManager.Write(MessageSerializer.Serialize(message));
+        FileManager.Write(MessageSerializer.Serialize(primitive), DataLinkPaths.Output);
     }
 
     protected override void HandleNewMessage(byte[] data, string fileName)

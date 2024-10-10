@@ -1,6 +1,6 @@
 namespace tp1_network_service.Enums;
 
-public enum MessagePrimitive
+public enum PrimitiveType
 {
     Req,
     Ind,

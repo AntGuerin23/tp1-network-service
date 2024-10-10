@@ -12,7 +12,6 @@ public class TransportLayer : Layer
 
     public TransportConnectionsHandler ConnectionsHandler { get; } = new();
     public FilePaths UpperLayerPaths { private get; set; }
-    public FilePaths NetworkPaths { private get; set; }
 
     public static TransportLayer Instance
     {
@@ -29,39 +28,33 @@ public class TransportLayer : Layer
 
     public override void StartListening()
     {
-        var upperLayerInputThread =
-            new Thread(() => ListenInputFile(UpperLayerPaths.Input, InputThreadsCancelToken.Token));
-        var networkInputThreads =
-            new Thread(() => ListenInputFile(NetworkPaths.Input, InputThreadsCancelToken.Token));
-        InputListenerThreads.AddRange([upperLayerInputThread, networkInputThreads]);
-        upperLayerInputThread.Start();
-        networkInputThreads.Start();
-    }
-
-    internal void SendMessageToNetworkLayer(Message message)
-    {
-        var fileManager = new FileManager(NetworkPaths.Output);
-        fileManager.Write(MessageSerializer.Serialize(message));
+        // var upperLayerInputThread =
+        //     new Thread(() => ListenInputFile(UpperLayerPaths.Input, InputThreadsCancelToken.Token));
+        // // var networkInputThreads =
+        // //     new Thread(() => ListenInputFile(NetworkPaths.Input, InputThreadsCancelToken.Token));
+        // InputListenerThreads.AddRange([upperLayerInputThread, networkInputThreads]);
+        // upperLayerInputThread.Start();
+        // networkInputThreads.Start();
     }
 
     protected override void HandleNewMessage(byte[] data, string fileName)
     {
-        if (fileName.Equals(UpperLayerPaths.Input))
-        {
-            HandleRawMessageFromUpperLayer(data);
-        }
-        else if (fileName.Equals(NetworkPaths.Input))
-        {
-            HandleRawMessageFromNetwork(data);
-        }
+        // if (fileName.Equals(UpperLayerPaths.Input))
+        // {
+        //     HandleRawMessageFromUpperLayer(data);
+        // }
+        // else if (fileName.Equals(NetworkPaths.Input))
+        // {
+        //     HandleRawMessageFromNetwork(data);
+        // }
     }
 
-    private void HandleRawMessageFromUpperLayer(byte[] data)
-    {
-        var connectMessage = InitNewConnection();
-        ConnectionsHandler.StoreDataForConfirmedConnection(connectMessage.ConnectionNumber, data);
-        SendMessageToNetworkLayer(connectMessage);
-    }
+    // private void HandleRawMessageFromUpperLayer(byte[] data)
+    // {
+    //     var connectMessage = InitNewConnection();
+    //     ConnectionsHandler.StoreDataForConfirmedConnection(connectMessage.ConnectionNumber, data);
+    //     SendMessageToNetworkLayer(connectMessage);
+    // }
 
     private void HandleRawMessageFromNetwork(byte[] data)
     {
@@ -70,16 +63,16 @@ public class TransportLayer : Layer
         message.Handle(true);
     }
 
-    private ConnectMessage InitNewConnection()
+    private ConnectPrimitive InitNewConnection()
     {
         var connectionId = ConnectionsHandler.CreateWaitingConnection();
         return CreateConnectMessage(connectionId);
     }
 
-    private ConnectMessage CreateConnectMessage(int connectionId)
+    private ConnectPrimitive CreateConnectMessage(int connectionId)
     {
         var messageBuilder = new MessageBuilder();
-        return (ConnectMessage)messageBuilder.SetConnectionNumber((byte)connectionId)
+        return (ConnectPrimitive)messageBuilder.SetConnectionNumber((byte)connectionId)
             .SetSource(127)
             .SetDestination(128)
             .ToConnectMessage()

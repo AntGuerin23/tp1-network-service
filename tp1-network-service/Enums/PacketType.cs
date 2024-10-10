@@ -1,6 +1,6 @@
 namespace tp1_network_service.Enums;
 
-internal enum MessageType
+internal enum PacketType
 {
     ConnectRequest = 0b00001011,
     ConnectConfirmation = 0b00001111,
