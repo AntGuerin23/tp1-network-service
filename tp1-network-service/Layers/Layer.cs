@@ -1,5 +1,3 @@
-using tp1_network_service.Messages;
-
 namespace tp1_network_service.Layers;
 
 public abstract class Layer

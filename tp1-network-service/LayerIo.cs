@@ -1,38 +1,50 @@
-using tp1_network_service.Messages;
+using tp1_network_service.Primitives;
 
-namespace tp1_network_service.InterLayerCommunication;
+namespace tp1_network_service;
 
 internal class LayerIo
 {
     private const string FromTransportToNetworkPath = "FROM_T_TO_R.txt";
     private const string FromNetworkToTransportPath = "FROM_R_TO_T.txt";
 
-    protected static object NetworkWriteToLock;
-    protected static object NetworkReadFromLock;
+    private static readonly object FromTransportToNetworkLock = new();
+    private static readonly object FromNetworkToTransportLock = new();
 
-    public Primitive ReadFromTransport()
+    public static Primitive ReadFromTransport()
     {
-        FileManager.Read(FromTransportToNetworkPath);
-        //TODO : Deserialize
-        throw new NotImplementedException();
+        lock (FromTransportToNetworkLock)
+        {
+            FileManager.Read(FromTransportToNetworkPath);
+            //TODO : Deserialize
+            throw new NotImplementedException();
+        } 
     }
 
-    public void WriteToTransport(Primitive primitive)
+    public static void WriteToTransport(Primitive primitive)
     {
-        //TODO: Serialize
-        FileManager.Write(Array.Empty<byte>(), FromNetworkToTransportPath);
+        lock (FromNetworkToTransportLock)
+        {
+            //TODO: Serialize
+            FileManager.Write(Array.Empty<byte>(), FromNetworkToTransportPath);
+        }
     }
     
-    public Primitive ReadFromNetwork()
+    public static Primitive ReadFromNetwork()
     {
-        FileManager.Read(FromNetworkToTransportPath);
-        //TODO : Deserialize
-        throw new NotImplementedException();
+        lock (FromNetworkToTransportLock)
+        {
+            FileManager.Read(FromNetworkToTransportPath);
+            //TODO : Deserialize
+            throw new NotImplementedException();
+        }
     }
 
-    public void WriteToNetwork(Primitive primitive)
+    public static void WriteToNetwork(Primitive primitive)
     {
-        //TODO: Serialize
-        FileManager.Write(Array.Empty<byte>(), FromTransportToNetworkPath);
+        lock (FromTransportToNetworkLock)
+        {
+            //TODO: Serialize
+            FileManager.Write(Array.Empty<byte>(), FromTransportToNetworkPath);
+        }
     }
 }

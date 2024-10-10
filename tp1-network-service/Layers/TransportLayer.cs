@@ -1,7 +1,8 @@
 using System.Text;
-using tp1_network_service.Messages;
-using tp1_network_service.Messages.Builder;
-using tp1_network_service.Serialization;
+using tp1_network_service.Builder;
+using tp1_network_service.Packets;
+using tp1_network_service.Primitives;
+using tp1_network_service.Primitives.Children;
 
 namespace tp1_network_service.Layers;
 
@@ -56,26 +57,19 @@ public class TransportLayer : Layer
     //     SendMessageToNetworkLayer(connectMessage);
     // }
 
-    private void HandleRawMessageFromNetwork(byte[] data)
-    {
-        Console.WriteLine($"Received {Encoding.Default.GetString(data)} , From Network Layer");
-        var message = MessageSerializer.Deserialize(data, true);
-        message.Handle(true);
-    }
+    // private ConnectRequestPrimitive InitNewConnection()
+    // {
+    //     var connectionId = ConnectionsHandler.CreateWaitingConnection();
+    //     return CreateConnectMessage(connectionId);
+    // }
 
-    private ConnectPrimitive InitNewConnection()
-    {
-        var connectionId = ConnectionsHandler.CreateWaitingConnection();
-        return CreateConnectMessage(connectionId);
-    }
-
-    private ConnectPrimitive CreateConnectMessage(int connectionId)
-    {
-        var messageBuilder = new MessageBuilder();
-        return (ConnectPrimitive)messageBuilder.SetConnectionNumber((byte)connectionId)
-            .SetSource(127)
-            .SetDestination(128)
-            .ToConnectMessage()
-            .GetResult();
-    }
+    // private ConnectRequestPrimitive CreateConnectMessage(int connectionId)
+    // {
+    //     var messageBuilder = new MessageBuilder();
+    //     return (ConnectRequestPrimitive)messageBuilder.SetConnectionNumber((byte)connectionId)
+    //         .SetSource(127)
+    //         .SetDestination(128)
+    //         .ToConnectMessage()
+    //         .GetResult();
+    // }
 }

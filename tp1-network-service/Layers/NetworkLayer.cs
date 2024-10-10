@@ -1,7 +1,6 @@
 using System.Text;
-using tp1_network_service.Enums;
-using tp1_network_service.Messages;
-using tp1_network_service.Serialization;
+using tp1_network_service.Packets;
+using tp1_network_service.Primitives;
 
 namespace tp1_network_service.Layers;
 
@@ -56,12 +55,12 @@ public class NetworkLayer : Layer
 
     internal void SendMessageToDataLinkLayer(Primitive primitive)
     {
-        FileManager.Write(MessageSerializer.Serialize(primitive), DataLinkPaths.Output);
+      //  FileManager.Write(PacketSerializer.Serialize(primitive), DataLinkPaths.Output);
     }
 
     protected override void HandleNewMessage(byte[] data, string fileName)
     {
-        var message = MessageSerializer.Deserialize(data, false);
-        message.Handle();
+        //var message = PacketSerializer.Deserialize(data, false);
+        //message.Handle();
     }
 }

@@ -1,4 +1,4 @@
-namespace tp1_network_service.Serialization;
+namespace tp1_network_service.Packets;
 
 internal class DataSegmenter
 {

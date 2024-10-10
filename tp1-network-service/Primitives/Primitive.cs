@@ -1,6 +1,4 @@
-using tp1_network_service.Enums;
-
-namespace tp1_network_service.Messages;
+namespace tp1_network_service.Primitives;
 
 internal abstract class Primitive
 {

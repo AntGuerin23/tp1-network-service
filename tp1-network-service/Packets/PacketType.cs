@@ -1,4 +1,4 @@
-namespace tp1_network_service.Enums;
+namespace tp1_network_service.Packets;
 
 internal enum PacketType
 {

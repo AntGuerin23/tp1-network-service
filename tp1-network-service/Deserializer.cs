@@ -1,12 +1,11 @@
-using tp1_network_service.Enums;
-using tp1_network_service.Messages;
-using tp1_network_service.Messages.Builder;
+using tp1_network_service.Packets;
+using tp1_network_service.Primitives;
 
-namespace tp1_network_service.Serialization;
+namespace tp1_network_service;
 
-internal class MessageSerializer
+internal class Deserializer
 {
-    public static Primitive Deserialize(byte[] rawInput, bool messageWasReceivedByTransportLayer)
+    public static Packet DeserializePacket(byte[] rawInput)
     {
         // var builder = new MessageBuilder();
         //
@@ -53,9 +52,9 @@ internal class MessageSerializer
         throw new NotImplementedException();
     }
 
-    public static byte[] Serialize(Primitive primitive)
+    public static Primitive DeserializePrimitive(byte[] rawPrimitive)
     {
-        return Array.Empty<byte>();
+        throw new NotImplementedException();
     }
 
     // private static PrimitiveType FindType(byte typeByte)

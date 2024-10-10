@@ -1,11 +1,22 @@
-using tp1_network_service.Enums;
-using tp1_network_service.Layers;
-using tp1_network_service.Messages.Builder;
+namespace tp1_network_service.Primitives.Children;
 
-namespace tp1_network_service.Messages;
-
-internal class ConnectPrimitive(Primitive primitive) : Primitive(primitive)
+internal class ConnectRequestPrimitive(Primitive primitive) : Primitive(primitive)
 {
+    public int? SourceAddress { get; set; }
+    public int? DestinationAddress { get; set; }
+
+    public int? ResponseAddress
+    {
+        get
+        {
+            if (Type is PrimitiveType.Resp or PrimitiveType.Conf)
+            {
+                return DestinationAddress;
+            }
+            return default;
+        }
+    }
+
     public override void Handle(bool isHandledByTransport = false)
     {
         // if (isHandledByTransport)
