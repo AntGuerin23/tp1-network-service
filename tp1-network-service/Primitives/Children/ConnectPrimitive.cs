@@ -1,9 +1,9 @@
 namespace tp1_network_service.Primitives.Children;
 
-internal class ConnectRequestPrimitive(Primitive primitive) : Primitive(primitive)
+internal class ConnectPrimitive : Primitive
 {
-    public int? SourceAddress { get; set; }
-    public int? DestinationAddress { get; set; }
+    public int? SourceAddress { get; }
+    public int? DestinationAddress { get; }
 
     public int? ResponseAddress
     {
@@ -15,6 +15,12 @@ internal class ConnectRequestPrimitive(Primitive primitive) : Primitive(primitiv
             }
             return default;
         }
+    }
+
+    public ConnectPrimitive(Primitive primitive, int source, int destination) : base(primitive)
+    {
+        SourceAddress = source;
+        DestinationAddress = destination;
     }
 
     public override void Handle(bool isHandledByTransport = false)

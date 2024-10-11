@@ -1,7 +1,13 @@
 namespace tp1_network_service.Primitives.Children; 
 
-internal class DisconnectPrimitive(Primitive primitive, DisconnectReason? reason) : Primitive(primitive)
+internal class DisconnectPrimitive : Primitive
 {
+    public DisconnectReason? Reason { get; }
+    
+    public DisconnectPrimitive(Primitive primitive, DisconnectReason? reason) : base(primitive)
+    {
+        Reason = reason;
+    }
     
     public override void Handle(bool isHandledByTransport = false)
     {
