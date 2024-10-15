@@ -29,10 +29,8 @@ internal class NetworkLayer : Layer, INetworkLayer
 
     public override void StartListening()
     {
-        var dataLinkInputThread =
-            new Thread(() => ListenInputFile(DataLinkPaths.Input, InputThreadsCancelToken.Token));
-        InputListenerThreads.Add(dataLinkInputThread);
-        dataLinkInputThread.Start();
+        InputListenerThread = new Thread(() => ListenInputFile(DataLinkPaths.Input, InputThreadsCancelToken.Token));
+        InputListenerThread.Start();
     }
 
     public (int, int)? GetAndResetWaitingConnectionNumberAndDestination()
@@ -58,7 +56,7 @@ internal class NetworkLayer : Layer, INetworkLayer
       //  FileManager.Write(PacketSerializer.Serialize(primitive), DataLinkPaths.Output);
     }
 
-    protected override void HandleNewMessage(byte[] data, string fileName)
+    protected override void HandleNewMessage(byte[] data)
     {
         //var message = PacketSerializer.Deserialize(data, false);
         //message.Handle();

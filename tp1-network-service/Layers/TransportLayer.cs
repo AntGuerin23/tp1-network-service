@@ -24,9 +24,8 @@ internal class TransportLayer : Layer, ITransportLayer
 
     public override void StartListening()
     {
-        var upperLayerInputThread = new Thread(() => ListenInputFile(UpperLayerPaths.Input, InputThreadsCancelToken.Token));
-        InputListenerThreads.Add(upperLayerInputThread);
-        upperLayerInputThread.Start();
+        InputListenerThread = new Thread(() => ListenInputFile(UpperLayerPaths.Input, InputThreadsCancelToken.Token));
+        InputListenerThread.Start();
     }
     
     public void ConfirmConnection(ConnectPrimitive connectPrimitive)
@@ -49,7 +48,7 @@ internal class TransportLayer : Layer, ITransportLayer
         ConnectionsHandler.RemoveConnection(disconnectPrimitive.ConnectionNumber);
     }
 
-    protected override void HandleNewMessage(byte[] data, string fileName)
+    protected override void HandleNewMessage(byte[] data)
     {
         var connectMessage = InitNewConnection();
         ConnectionsHandler.StoreDataForConfirmedConnection(connectMessage.ConnectionNumber, data);
