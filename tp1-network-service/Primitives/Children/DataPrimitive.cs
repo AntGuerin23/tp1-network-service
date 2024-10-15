@@ -4,16 +4,10 @@ internal class DataPrimitive : Primitive
 {
     public byte[] Data { get; }
 
-    public DataPrimitive(Primitive primitive, byte[] data) : base(primitive)
+    public DataPrimitive(PrimitiveType type, int connectionNumber, byte[] data) : base(type, connectionNumber)
     {
         Data = data;
     }
-
-    public override void Handle(bool isHandledByTransport = false)
-    {
-        throw new NotImplementedException();
-    }
-
     public override byte[] Serialize()
     {
         throw new NotImplementedException();

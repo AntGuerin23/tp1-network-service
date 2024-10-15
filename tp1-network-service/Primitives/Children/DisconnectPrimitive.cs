@@ -4,19 +4,9 @@ internal class DisconnectPrimitive : Primitive
 {
     public DisconnectReason? Reason { get; }
     
-    public DisconnectPrimitive(Primitive primitive, DisconnectReason? reason) : base(primitive)
+    public DisconnectPrimitive(PrimitiveType type, int connectionNumber, DisconnectReason? reason) : base(type, connectionNumber)
     {
         Reason = reason;
-    }
-    
-    public override void Handle(bool isHandledByTransport = false)
-    {
-        // if (isHandledByTransport)
-        // {
-        //     HandleFromTransport();
-        //     return;
-        // }
-        // HandleFromNetwork();
     }
 
     public override byte[] Serialize()

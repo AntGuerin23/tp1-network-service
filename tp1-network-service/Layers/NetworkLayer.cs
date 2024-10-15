@@ -1,14 +1,17 @@
 using System.Text;
+using tp1_network_service.Builder;
+using tp1_network_service.Interfaces;
 using tp1_network_service.Packets;
 using tp1_network_service.Primitives;
+using tp1_network_service.Primitives.Children;
 
 namespace tp1_network_service.Layers;
 
-public class NetworkLayer : Layer
+internal class NetworkLayer : Layer, INetworkLayer
 {
     private static NetworkLayer? _instance;
-    private (int, byte)? _waitingConnectionNumberAndDestination;
-    private object _waitingConnectionNumberAndDestinationLock = new();
+    private (int, int)? _waitingConnectionNumberAndDestination;
+    private readonly object _waitingConnectionNumberAndDestinationLock = new();
     public FilePaths DataLinkPaths { private get; set; }
 
     public static NetworkLayer Instance
@@ -26,16 +29,13 @@ public class NetworkLayer : Layer
 
     public override void StartListening()
     {
-        // var dataLinkInputThread =
-        //     new Thread(() => ListenInputFile(DataLinkPaths.Input, InputThreadsCancelToken.Token));
-        // var transportInputThread =
-        //     new Thread(() => ListenInputFile(TransportPaths.Input, InputThreadsCancelToken.Token));
-        // InputListenerThreads.AddRange([dataLinkInputThread, transportInputThread]);
-        // dataLinkInputThread.Start();
-        // transportInputThread.Start();
+        var dataLinkInputThread =
+            new Thread(() => ListenInputFile(DataLinkPaths.Input, InputThreadsCancelToken.Token));
+        InputListenerThreads.Add(dataLinkInputThread);
+        dataLinkInputThread.Start();
     }
 
-    internal (int, byte)? GetAndResetWaitingConnectionNumberAndDestination()
+    public (int, int)? GetAndResetWaitingConnectionNumberAndDestination()
     {
         lock (_waitingConnectionNumberAndDestinationLock)
         {
@@ -45,7 +45,7 @@ public class NetworkLayer : Layer
         }
     }
 
-    internal void SetWaitingConnectionNumberAndDestination(int connectionNumber, byte destination)
+    public void SetWaitingConnectionNumberAndDestination(int connectionNumber, int destination)
     {
         lock (_waitingConnectionNumberAndDestinationLock)
         {
@@ -53,7 +53,7 @@ public class NetworkLayer : Layer
         }
     }
 
-    internal void SendMessageToDataLinkLayer(Primitive primitive)
+    public void SendMessageToDataLinkLayer(Primitive primitive)
     {
       //  FileManager.Write(PacketSerializer.Serialize(primitive), DataLinkPaths.Output);
     }
@@ -62,5 +62,59 @@ public class NetworkLayer : Layer
     {
         //var message = PacketSerializer.Deserialize(data, false);
         //message.Handle();
+    }
+    private bool IsNetworkServiceError(int source) => (source & 27) == 0;
+
+    public void Connect(ConnectPrimitive connectPrimitive)
+    {
+        if (IsNetworkServiceError(connectPrimitive.SourceAddress))
+        {
+            var disconnectMessage = new PrimitiveBuilder().SetConnectionNumber(connectPrimitive.ConnectionNumber)
+                .SetSourceAddress(connectPrimitive.DestinationAddress)
+                .SetDestinationAddress(connectPrimitive.SourceAddress)
+                .SetReason(DisconnectReason.NetworkService)
+                .ToDisconnectPrimitive();
+            TransportLayer.Instance.Disconnect(disconnectMessage);
+            return;
+        }
+        SetWaitingConnectionNumberAndDestination(connectPrimitive.ConnectionNumber, connectPrimitive.DestinationAddress);
+        var connectIndMessage = new PrimitiveBuilder().SetConnectionNumber(connectPrimitive.ConnectionNumber)
+            .SetSourceAddress(connectPrimitive.SourceAddress)
+            .SetDestinationAddress(connectPrimitive.DestinationAddress)
+            .SetType(PrimitiveType.Ind)
+            .ToConnectPrimitive();
+        Instance.SendMessageToDataLinkLayer(connectIndMessage);
+    }
+
+    public void Disconnect(DisconnectPrimitive disconnectPrimitive)
+    {
+        Instance.SendMessageToDataLinkLayer(disconnectPrimitive);
+    }
+
+    public void SendData(DataPrimitive dataPrimitive)
+    {
+        Instance.SendMessageToDataLinkLayer(dataPrimitive);
+    }
+
+    private void HandleConnectResponse(ConnectPrimitive connectPrimitive)
+    {
+        // var messageBuilder = new MessageBuilder();
+        //     var waitingConnection = NetworkLayer.Instance.GetAndResetWaitingConnectionNumberAndDestination();
+        //     if (waitingConnection != null && waitingConnection.Value.Item1 != ConnectionNumber)
+        //     {
+        //         var disconnectMessage = messageBuilder.SetConnectionNumber((byte)waitingConnection.Value.Item1)
+        //             .SetSource(waitingConnection.Value.Item2)
+        //             .SetPrimitive(MessagePrimitive.Ind)
+        //             .ToDisconnectMessage(DisconnectReason.Self)
+        //             .GetResult();
+        //         NetworkLayer.Instance.SendMessageToTransportLayer(disconnectMessage);
+        //     }
+        //     var connectResponseMessage = messageBuilder.SetConnectionNumber((byte)ConnectionNumber)
+        //         .SetSource(Source)
+        //         .SetDestination(Destination)
+        //         .SetPrimitive(MessagePrimitive.Conf)
+        //         .ToConnectMessage()
+        //         .GetResult();
+        //     NetworkLayer.Instance.SendMessageToTransportLayer(connectResponseMessage);
     }
 }

@@ -1,17 +1,13 @@
-using System.Text;
 using tp1_network_service.Builder;
-using tp1_network_service.Packets;
-using tp1_network_service.Primitives;
+using tp1_network_service.Interfaces;
 using tp1_network_service.Primitives.Children;
 
 namespace tp1_network_service.Layers;
 
-// TODO : Class should be internal with a Facade accessing it
-public class TransportLayer : Layer
+internal class TransportLayer : Layer, ITransportLayer
 {
     private static TransportLayer? _instance;
-
-    public TransportConnectionsHandler ConnectionsHandler { get; } = new();
+    private TransportConnectionsHandler ConnectionsHandler { get; } = new();
     public FilePaths UpperLayerPaths { private get; set; }
 
     public static TransportLayer Instance
@@ -22,54 +18,55 @@ public class TransportLayer : Layer
             {
                 _instance = new TransportLayer();
             }
-
             return _instance;
         }
     }
 
     public override void StartListening()
     {
-        // var upperLayerInputThread =
-        //     new Thread(() => ListenInputFile(UpperLayerPaths.Input, InputThreadsCancelToken.Token));
-        // // var networkInputThreads =
-        // //     new Thread(() => ListenInputFile(NetworkPaths.Input, InputThreadsCancelToken.Token));
-        // InputListenerThreads.AddRange([upperLayerInputThread, networkInputThreads]);
-        // upperLayerInputThread.Start();
-        // networkInputThreads.Start();
+        var upperLayerInputThread = new Thread(() => ListenInputFile(UpperLayerPaths.Input, InputThreadsCancelToken.Token));
+        InputListenerThreads.Add(upperLayerInputThread);
+        upperLayerInputThread.Start();
+    }
+    
+    public void ConfirmConnection(ConnectPrimitive connectPrimitive)
+    {
+        ConnectionsHandler.ConfirmWaitingConnection(connectPrimitive.ConnectionNumber);
+        var pendingData = ConnectionsHandler.GetPendingData(connectPrimitive.ConnectionNumber);
+        
+        if (pendingData.Length <= 0) return;
+
+        var dataPrimitive = new PrimitiveBuilder().SetConnectionNumber(connectPrimitive.ConnectionNumber)
+            .SetSourceAddress(connectPrimitive.DestinationAddress)
+            .SetDestinationAddress(connectPrimitive.SourceAddress)
+            .SetData(pendingData)
+            .ToDataPrimitive();
+        NetworkLayer.Instance.SendData(dataPrimitive);
+    }
+
+    public void Disconnect(DisconnectPrimitive disconnectPrimitive)
+    {
+        ConnectionsHandler.RemoveConnection(disconnectPrimitive.ConnectionNumber);
     }
 
     protected override void HandleNewMessage(byte[] data, string fileName)
     {
-        // if (fileName.Equals(UpperLayerPaths.Input))
-        // {
-        //     HandleRawMessageFromUpperLayer(data);
-        // }
-        // else if (fileName.Equals(NetworkPaths.Input))
-        // {
-        //     HandleRawMessageFromNetwork(data);
-        // }
+        var connectMessage = InitNewConnection();
+        ConnectionsHandler.StoreDataForConfirmedConnection(connectMessage.ConnectionNumber, data);
+        NetworkLayer.Instance.Connect(connectMessage);
     }
 
-    // private void HandleRawMessageFromUpperLayer(byte[] data)
-    // {
-    //     var connectMessage = InitNewConnection();
-    //     ConnectionsHandler.StoreDataForConfirmedConnection(connectMessage.ConnectionNumber, data);
-    //     SendMessageToNetworkLayer(connectMessage);
-    // }
+    private ConnectPrimitive InitNewConnection()
+    {
+        var connectionId = ConnectionsHandler.CreateWaitingConnection();
+        return CreateConnectMessage(connectionId);
+    }
 
-    // private ConnectRequestPrimitive InitNewConnection()
-    // {
-    //     var connectionId = ConnectionsHandler.CreateWaitingConnection();
-    //     return CreateConnectMessage(connectionId);
-    // }
-
-    // private ConnectRequestPrimitive CreateConnectMessage(int connectionId)
-    // {
-    //     var messageBuilder = new MessageBuilder();
-    //     return (ConnectRequestPrimitive)messageBuilder.SetConnectionNumber((byte)connectionId)
-    //         .SetSource(127)
-    //         .SetDestination(128)
-    //         .ToConnectMessage()
-    //         .GetResult();
-    // }
+    private ConnectPrimitive CreateConnectMessage(int connectionId)
+    {
+        return new PrimitiveBuilder().SetConnectionNumber(connectionId)
+            .SetSourceAddress(127)
+            .SetDestinationAddress(128)
+            .ToConnectPrimitive();
+    }
 }

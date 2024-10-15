@@ -5,14 +5,12 @@ internal abstract class Primitive
     public PrimitiveType Type { get; set; }
     public int ConnectionNumber { get; set; }
     
-    protected Primitive(Primitive primitive) //Copy constructor used by builder
+    protected Primitive(PrimitiveType type, int connectionNumber)
     {
-        ConnectionNumber = primitive.ConnectionNumber;
-        Type = primitive.Type; 
+        Type = type;
+        ConnectionNumber = connectionNumber;
     }
 
     protected Primitive() { }
-
-    public abstract void Handle(bool isHandledByTransport = false);
     public abstract byte[] Serialize();
 }
