@@ -13,6 +13,6 @@ internal class ConnectionRequestPacket : AddressedPacket
 
     public override void Handle()
     {
-        throw new NotImplementedException();
+        throw new UserBNotImplementedException();
     }
 }

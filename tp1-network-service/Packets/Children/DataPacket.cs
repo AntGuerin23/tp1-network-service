@@ -20,6 +20,6 @@ internal class DataPacket : Packet
 
     public override void Handle()
     {
-        throw new NotImplementedException();
+        throw new UserBNotImplementedException();
     }
 }

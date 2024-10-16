@@ -7,15 +7,15 @@ internal class DataAcknowledgmentPacket : Packet
     public bool ReceptionSuccess { get; set; }
     public byte NextSegmentNumber { get; set; }
     
-    public DataAcknowledgmentPacket(PacketType type, int connectionNumber, bool receptionSuccess, byte nextSegmentNumber) : base(type, connectionNumber)
+    public DataAcknowledgmentPacket(PacketType type, int connectionNumber, SegmentationInfo segInfo) : base(type, connectionNumber)
     {
-        ReceptionSuccess = receptionSuccess;
-        NextSegmentNumber = nextSegmentNumber;
+        ReceptionSuccess = segInfo.CurrentSegmentNumber != 4;
+        NextSegmentNumber = segInfo.NextSegmentNumber;
     }
     
     public override byte[] Serialize()
     {
-        throw new NotImplementedException();
+        throw new UserBNotImplementedException();
     }
 
     public override void Handle()

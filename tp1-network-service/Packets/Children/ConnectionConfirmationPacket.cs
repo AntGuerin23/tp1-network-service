@@ -8,12 +8,12 @@ internal class ConnectionConfirmationPacket : AddressedPacket
     
     public override byte[] Serialize()
     {
-        throw new NotImplementedException();
+        throw new UserBNotImplementedException();
     }
 
     public override void Handle()
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException(); 
     }
 
 }

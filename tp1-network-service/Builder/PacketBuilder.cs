@@ -15,14 +15,30 @@ internal class PacketBuilder : CommunicationEntityBuilder<PacketBuilder>
         return this;
     }
     
+    public PacketBuilder SetSegmentationInfo(SegmentationInfo segInfo)
+    {
+        _segInfo = segInfo;
+        return this;
+    }
+    
     public ConnectionRequestPacket ToConnectionRequestPacket()
     {
         return new ConnectionRequestPacket(_type, ConnectionNumber, SourceAddress, DestinationAddress);
+    }
+    
+    public ConnectionConfirmationPacket ToConnectionConfirmationPacket()
+    {
+        return new ConnectionConfirmationPacket(_type, ConnectionNumber, SourceAddress, DestinationAddress);
     }
 
     public DataPacket ToDataPacket()
     {
         return new DataPacket(_type, ConnectionNumber, Data, _segInfo);
+    }
+    
+    public DataAcknowledgmentPacket ToDataAcknowledgmentPacket()
+    {
+        return new DataAcknowledgmentPacket(_type, ConnectionNumber, _segInfo);
     }
 
     public DisconnectPacket ToDisconnectPacket()
