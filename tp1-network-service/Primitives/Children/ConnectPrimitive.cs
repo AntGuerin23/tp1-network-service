@@ -22,9 +22,4 @@ internal class ConnectPrimitive : Primitive
         SourceAddress = source;
         DestinationAddress = destination;
     }
-
-    public override byte[] Serialize()
-    {
-        throw new NotImplementedException();
-    }
 }

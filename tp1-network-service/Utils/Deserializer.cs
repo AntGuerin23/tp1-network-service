@@ -1,7 +1,6 @@
-using tp1_network_service.Packets;
-using tp1_network_service.Primitives;
+using tp1_network_service.Packets.Abstract;
 
-namespace tp1_network_service;
+namespace tp1_network_service.Utils;
 
 internal class Deserializer
 {

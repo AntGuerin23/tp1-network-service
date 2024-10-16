@@ -1,3 +1,5 @@
+using tp1_network_service.Enums;
+
 namespace tp1_network_service.Primitives.Children; 
 
 internal class DisconnectPrimitive : Primitive
@@ -7,10 +9,5 @@ internal class DisconnectPrimitive : Primitive
     public DisconnectPrimitive(PrimitiveType type, int connectionNumber, DisconnectReason? reason) : base(type, connectionNumber)
     {
         Reason = reason;
-    }
-
-    public override byte[] Serialize()
-    {
-        throw new NotImplementedException();
     }
 }

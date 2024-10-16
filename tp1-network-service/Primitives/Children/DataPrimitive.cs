@@ -8,8 +8,4 @@ internal class DataPrimitive : Primitive
     {
         Data = data;
     }
-    public override byte[] Serialize()
-    {
-        throw new NotImplementedException();
-    }
 }

@@ -1,5 +1,6 @@
 using System.Text;
 using tp1_network_service.Builder;
+using tp1_network_service.Enums;
 using tp1_network_service.Interfaces;
 using tp1_network_service.Packets;
 using tp1_network_service.Primitives;

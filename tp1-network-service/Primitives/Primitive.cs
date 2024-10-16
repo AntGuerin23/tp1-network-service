@@ -1,9 +1,8 @@
 namespace tp1_network_service.Primitives;
 
-internal abstract class Primitive
+internal abstract class Primitive : CommunicationEntity
 {
     public PrimitiveType Type { get; set; }
-    public int ConnectionNumber { get; set; }
     
     protected Primitive(PrimitiveType type, int connectionNumber)
     {
@@ -12,5 +11,4 @@ internal abstract class Primitive
     }
 
     protected Primitive() { }
-    public abstract byte[] Serialize();
 }

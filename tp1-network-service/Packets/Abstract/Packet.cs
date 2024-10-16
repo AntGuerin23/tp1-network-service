@@ -1,8 +1,12 @@
-namespace tp1_network_service.Packets;
+namespace tp1_network_service.Packets.Abstract;
 
-internal abstract class Packet
+internal abstract class Packet : CommunicationEntity
 {
-    public int ConnectionNumber { get; set; }
+    protected Packet(PacketType type)
+    {
+        Type = type;
+    }
+    
     public PacketType Type { get; set; }
 
     public abstract byte[] Serialize();

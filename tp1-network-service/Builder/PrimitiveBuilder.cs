@@ -1,76 +1,31 @@
+using tp1_network_service.Builder.Abstract;
 using tp1_network_service.Primitives;
 using tp1_network_service.Primitives.Children;
 
 namespace tp1_network_service.Builder;
 
-internal class PrimitiveBuilder
+internal class PrimitiveBuilder : CommunicationEntityBuilder<PrimitiveBuilder>
 {
     private PrimitiveType _type;
-    private int _connectionNumber;
     
-    private int _sourceAddress;
-    private int _destinationAddress;
-    private int _responseAddress;
-
-    private byte[] _data;
-
-    private DisconnectReason _reason;
-
-
-    public ConnectPrimitive ToConnectPrimitive()
-    {
-        return new ConnectPrimitive(_type, _connectionNumber, _sourceAddress, _destinationAddress);
-    }
-
-    public DataPrimitive ToDataPrimitive()
-    {
-        return new DataPrimitive(_type, _connectionNumber, _data);
-    }
-
-    public DisconnectPrimitive ToDisconnectPrimitive()
-    {
-        return new DisconnectPrimitive(_type, _connectionNumber, _reason);
-    }
-
     public PrimitiveBuilder SetType(PrimitiveType type)
     {
         _type = type;
         return this;
     }
-
-    public PrimitiveBuilder SetConnectionNumber(int connectionNumber)
+    
+    public ConnectPrimitive ToConnectPrimitive()
     {
-        _connectionNumber = connectionNumber;
-        return this;
+        return new ConnectPrimitive(_type, ConnectionNumber, SourceAddress, DestinationAddress);
     }
 
-    public PrimitiveBuilder SetSourceAddress(int sourceAddress)
+    public DataPrimitive ToDataPrimitive()
     {
-        _sourceAddress = sourceAddress;
-        return this;
+        return new DataPrimitive(_type, ConnectionNumber, Data);
     }
 
-    public PrimitiveBuilder SetDestinationAddress(int destinationAddress)
+    public DisconnectPrimitive ToDisconnectPrimitive()
     {
-        _destinationAddress = destinationAddress;
-        return this;
-    }
-
-    public PrimitiveBuilder SetResponseAddress(int responseAddress)
-    {
-        _responseAddress = responseAddress;
-        return this;
-    }
-
-    public PrimitiveBuilder SetData(byte[] data)
-    {
-        _data = data;
-        return this;
-    }
-
-    public PrimitiveBuilder SetReason(DisconnectReason reason)
-    {
-        _reason = reason;
-        return this;
+        return new DisconnectPrimitive(_type, ConnectionNumber, Reason);
     }
 }
