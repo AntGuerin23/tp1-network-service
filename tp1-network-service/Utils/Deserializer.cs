@@ -52,14 +52,4 @@ internal class Deserializer
         throw new NotImplementedException();
     }
 
-    public static Primitive DeserializePrimitive(byte[] rawPrimitive)
-    {
-        throw new NotImplementedException();
-    }
-
-    // private static PrimitiveType FindType(byte typeByte)
-    // {
-    //     var type = (PrimitiveType) typeByte;
-    //     return Enum.IsDefined(type) ? type : PrimitiveType.Data; //Data has a variable "type" byte, so if the enum doesn't find a match, it must be a data packet
-    // }
 }

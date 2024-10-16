@@ -12,7 +12,6 @@ internal class PrimitiveBuilder
     private int _destinationAddress;
     private int _responseAddress;
 
-
     private byte[] _data;
 
     private DisconnectReason _reason;

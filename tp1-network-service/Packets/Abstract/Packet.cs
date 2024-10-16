@@ -4,4 +4,7 @@ internal abstract class Packet
 {
     public int ConnectionNumber { get; set; }
     public PacketType Type { get; set; }
+
+    public abstract byte[] Serialize();
+    public abstract void Handle();
 }
