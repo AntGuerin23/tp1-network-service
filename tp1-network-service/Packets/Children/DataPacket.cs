@@ -7,7 +7,7 @@ internal class DataPacket : Packet
     public byte[] Data { get; set; }
     public SegmentationInfo SegInfo { get; set; }
     
-    public DataPacket(PacketType type, byte[] data, SegmentationInfo segInfo) : base(type)
+    public DataPacket(PacketType type, int connectionNumber, byte[] data, SegmentationInfo segInfo) : base(type, connectionNumber)
     {
         Data = data;
         SegInfo = segInfo;

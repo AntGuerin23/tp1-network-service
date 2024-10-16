@@ -2,7 +2,7 @@ namespace tp1_network_service.Packets.Abstract;
 
 internal abstract class Packet : CommunicationEntity
 {
-    protected Packet(PacketType type)
+    protected Packet(PacketType type, int connectionNumber) : base(connectionNumber)
     {
         Type = type;
     }

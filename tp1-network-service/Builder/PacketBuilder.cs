@@ -17,16 +17,16 @@ internal class PacketBuilder : CommunicationEntityBuilder<PacketBuilder>
     
     public ConnectionRequestPacket ToConnectionRequestPacket()
     {
-        return new ConnectionRequestPacket(_type, SourceAddress, DestinationAddress);
+        return new ConnectionRequestPacket(_type, ConnectionNumber, SourceAddress, DestinationAddress);
     }
 
     public DataPacket ToDataPacket()
     {
-        return new DataPacket(_type, Data, _segInfo);
+        return new DataPacket(_type, ConnectionNumber, Data, _segInfo);
     }
 
     public DisconnectPacket ToDisconnectPacket()
     {
-        return new DisconnectPacket(_type, SourceAddress, DestinationAddress, Reason);
+        return new DisconnectPacket(_type, ConnectionNumber, SourceAddress, DestinationAddress, Reason);
     }
 }

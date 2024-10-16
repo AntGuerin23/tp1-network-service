@@ -7,7 +7,7 @@ internal class DisconnectPacket : AddressedPacket
 {
     public DisconnectReason? Reason { get; set; }
     
-    public DisconnectPacket(PacketType type, int sourceAddress, int destinationAddress, DisconnectReason? reason) : base(type, sourceAddress, destinationAddress)
+    public DisconnectPacket(PacketType type, int connectionNumber, int sourceAddress, int destinationAddress, DisconnectReason? reason) : base(type, connectionNumber, sourceAddress, destinationAddress)
     {
         Reason = reason;
     }

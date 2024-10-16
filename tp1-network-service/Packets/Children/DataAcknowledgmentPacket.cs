@@ -7,7 +7,7 @@ internal class DataAcknowledgmentPacket : Packet
     public bool ReceptionSuccess { get; set; }
     public byte NextSegmentNumber { get; set; }
     
-    public DataAcknowledgmentPacket(PacketType type, bool receptionSuccess, byte nextSegmentNumber) : base(type)
+    public DataAcknowledgmentPacket(PacketType type, int connectionNumber, bool receptionSuccess, byte nextSegmentNumber) : base(type, connectionNumber)
     {
         ReceptionSuccess = receptionSuccess;
         NextSegmentNumber = nextSegmentNumber;

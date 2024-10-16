@@ -4,11 +4,8 @@ internal abstract class Primitive : CommunicationEntity
 {
     public PrimitiveType Type { get; set; }
     
-    protected Primitive(PrimitiveType type, int connectionNumber)
+    protected Primitive(PrimitiveType type, int connectionNumber) : base(connectionNumber)
     {
         Type = type;
-        ConnectionNumber = connectionNumber;
     }
-
-    protected Primitive() { }
 }
