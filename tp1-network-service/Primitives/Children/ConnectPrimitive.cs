@@ -1,3 +1,7 @@
+using tp1_network_service.Builder;
+using tp1_network_service.Packets;
+using tp1_network_service.Packets.Abstract;
+
 namespace tp1_network_service.Primitives.Children;
 
 internal class ConnectPrimitive : Primitive
@@ -21,5 +25,14 @@ internal class ConnectPrimitive : Primitive
     {
         SourceAddress = source;
         DestinationAddress = destination;
+    }
+
+    public override Packet ToPacket()
+    {
+        return new PacketBuilder().SetConnectionNumber(ConnectionNumber)
+            .SetType(PacketType.ConnectRequest)
+            .SetSourceAddress(SourceAddress)
+            .SetDestinationAddress(DestinationAddress)
+            .ToConnectionRequestPacket();
     }
 }

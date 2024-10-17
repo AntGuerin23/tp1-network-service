@@ -1,3 +1,5 @@
+using tp1_network_service.Packets.Abstract;
+
 namespace tp1_network_service.Primitives;
 
 internal abstract class Primitive : CommunicationEntity
@@ -8,4 +10,6 @@ internal abstract class Primitive : CommunicationEntity
     {
         Type = type;
     }
+
+    public abstract Packet ToPacket();
 }

@@ -1,10 +1,9 @@
-using System.Text;
 using tp1_network_service.Builder;
 using tp1_network_service.Enums;
 using tp1_network_service.Interfaces;
-using tp1_network_service.Packets;
 using tp1_network_service.Primitives;
 using tp1_network_service.Primitives.Children;
+using tp1_network_service.Utils;
 
 namespace tp1_network_service.Layers;
 
@@ -54,15 +53,17 @@ internal class NetworkLayer : Layer, INetworkLayer
 
     public void SendMessageToDataLinkLayer(Primitive primitive)
     {
-      //  FileManager.Write(PacketSerializer.Serialize(primitive), DataLinkPaths.Output);
+        var packet = primitive.ToPacket();
+        FileManager.Write(packet.Serialize(), DataLinkPaths.Output);
     }
 
-    protected override void HandleNewMessage(byte[] data)
+    protected override void HandleInput(byte[] data)
     {
+        var packet = Deserializer.DeserializePacket(data);
+        packet.Handle();
         //var message = PacketSerializer.Deserialize(data, false);
         //message.Handle();
     }
-    private bool IsNetworkServiceError(int source) => (source & 27) == 0;
 
     public void Connect(ConnectPrimitive connectPrimitive)
     {
@@ -94,26 +95,6 @@ internal class NetworkLayer : Layer, INetworkLayer
     {
         Instance.SendMessageToDataLinkLayer(dataPrimitive);
     }
-
-    private void HandleConnectResponse(ConnectPrimitive connectPrimitive)
-    {
-        // var messageBuilder = new MessageBuilder();
-        //     var waitingConnection = NetworkLayer.Instance.GetAndResetWaitingConnectionNumberAndDestination();
-        //     if (waitingConnection != null && waitingConnection.Value.Item1 != ConnectionNumber)
-        //     {
-        //         var disconnectMessage = messageBuilder.SetConnectionNumber((byte)waitingConnection.Value.Item1)
-        //             .SetSource(waitingConnection.Value.Item2)
-        //             .SetPrimitive(MessagePrimitive.Ind)
-        //             .ToDisconnectMessage(DisconnectReason.Self)
-        //             .GetResult();
-        //         NetworkLayer.Instance.SendMessageToTransportLayer(disconnectMessage);
-        //     }
-        //     var connectResponseMessage = messageBuilder.SetConnectionNumber((byte)ConnectionNumber)
-        //         .SetSource(Source)
-        //         .SetDestination(Destination)
-        //         .SetPrimitive(MessagePrimitive.Conf)
-        //         .ToConnectMessage()
-        //         .GetResult();
-        //     NetworkLayer.Instance.SendMessageToTransportLayer(connectResponseMessage);
-    }
+    
+    private bool IsNetworkServiceError(int source) => source % 27 == 0;
 }

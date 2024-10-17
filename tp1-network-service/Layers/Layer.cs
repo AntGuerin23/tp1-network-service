@@ -7,7 +7,7 @@ public abstract class Layer
     protected readonly CancellationTokenSource InputThreadsCancelToken = new();
     protected Thread InputListenerThread;
     public abstract void StartListening();
-    protected abstract void HandleNewMessage(byte[] data);
+    protected abstract void HandleInput(byte[] data);
 
     public void StopListening()
     {
@@ -27,7 +27,7 @@ public abstract class Layer
             var data = FileManager.Read(filePath);
             if (data.Length != 0)
             {
-                new Thread(() => HandleNewMessage(data)).Start(); //TODO : Seulement network devrait être asynchrone 
+                new Thread(() => HandleInput(data)).Start(); //TODO : Seulement network devrait être asynchrone 
             }
             Thread.Sleep(1000);
         }

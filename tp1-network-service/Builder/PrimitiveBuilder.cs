@@ -26,6 +26,6 @@ internal class PrimitiveBuilder : CommunicationEntityBuilder<PrimitiveBuilder>
 
     public DisconnectPrimitive ToDisconnectPrimitive()
     {
-        return new DisconnectPrimitive(_type, ConnectionNumber, Reason);
+        return new DisconnectPrimitive(_type, ConnectionNumber, Reason, SourceAddress, DestinationAddress);
     }
 }

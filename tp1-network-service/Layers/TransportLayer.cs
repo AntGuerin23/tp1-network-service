@@ -46,9 +46,10 @@ internal class TransportLayer : Layer, ITransportLayer
     public void Disconnect(DisconnectPrimitive disconnectPrimitive)
     {
         ConnectionsHandler.RemoveConnection(disconnectPrimitive.ConnectionNumber);
+        // TODO : Ecrire le resultat dans S_ECR.txt
     }
 
-    protected override void HandleNewMessage(byte[] data)
+    protected override void HandleInput(byte[] data)
     {
         var connectMessage = InitNewConnection();
         ConnectionsHandler.StoreDataForConfirmedConnection(connectMessage.ConnectionNumber, data);

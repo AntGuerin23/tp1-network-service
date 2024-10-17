@@ -1,5 +1,8 @@
+using tp1_network_service.Builder;
 using tp1_network_service.Enums;
+using tp1_network_service.Layers;
 using tp1_network_service.Packets.Abstract;
+using tp1_network_service.Primitives;
 
 namespace tp1_network_service.Packets.Children;
 
@@ -19,6 +22,11 @@ internal class DisconnectPacket : AddressedPacket
 
     public override void Handle()
     {
-        throw new NotImplementedException();
+        var disconnectPrimitive = new PrimitiveBuilder().SetConnectionNumber(ConnectionNumber)
+            .SetResponseAddress(SourceAddress)
+            .SetType(PrimitiveType.Ind)
+            .SetReason(DisconnectReason.Distant)
+            .ToDisconnectPrimitive();
+        TransportLayer.Instance.Disconnect(disconnectPrimitive);
     }
 }
