@@ -27,7 +27,7 @@ internal class ConnectPrimitive : Primitive
         DestinationAddress = destination;
     }
 
-    public override Packet ToPacket()
+    public Packet GeneratePacket()
     {
         return new PacketBuilder().SetConnectionNumber(ConnectionNumber)
             .SetType(PacketType.ConnectRequest)

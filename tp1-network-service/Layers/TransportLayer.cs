@@ -69,4 +69,6 @@ internal class TransportLayer : Layer, ITransportLayer
             .SetDestinationAddress(128)
             .ToConnectPrimitive();
     }
+
+    private TransportLayer() { }
 }

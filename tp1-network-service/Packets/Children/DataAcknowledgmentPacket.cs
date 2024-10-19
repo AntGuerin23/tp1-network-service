@@ -21,5 +21,6 @@ internal class DataAcknowledgmentPacket : Packet
     public override void Handle()
     {
         throw new NotImplementedException();
+        //If the last packet has been received, set segmenter to null in networklayer
     }
 }

@@ -10,6 +10,4 @@ internal abstract class Primitive : CommunicationEntity
     {
         Type = type;
     }
-
-    public abstract Packet ToPacket();
 }

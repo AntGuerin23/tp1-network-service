@@ -20,7 +20,7 @@ internal class DisconnectPrimitive : Primitive
         DestinationAddress = destination;
     }
 
-    public override Packet ToPacket()
+    public Packet GeneratePacket()
     {
         return new PacketBuilder().SetConnectionNumber(ConnectionNumber)
             .SetType(PacketType.Disconnect)

@@ -1,6 +1,8 @@
 using tp1_network_service.Builder;
 using tp1_network_service.Enums;
 using tp1_network_service.Interfaces;
+using tp1_network_service.Packets;
+using tp1_network_service.Packets.Abstract;
 using tp1_network_service.Primitives;
 using tp1_network_service.Primitives.Children;
 using tp1_network_service.Utils;
@@ -12,6 +14,7 @@ internal class NetworkLayer : Layer, INetworkLayer
     private static NetworkLayer? _instance;
     private (int, int)? _waitingConnectionNumberAndDestination;
     private readonly object _waitingConnectionNumberAndDestinationLock = new();
+    private PacketSegmenter? _currentPacketSegmenter; 
     public FilePaths DataLinkPaths { private get; set; }
 
     public static NetworkLayer Instance
@@ -51,9 +54,8 @@ internal class NetworkLayer : Layer, INetworkLayer
         }
     }
 
-    public void SendMessageToDataLinkLayer(Primitive primitive)
+    public void SendPacketToDataLinkLayer(Packet packet)
     {
-        var packet = primitive.ToPacket();
         FileManager.Write(packet.Serialize(), DataLinkPaths.Output);
     }
 
@@ -83,18 +85,34 @@ internal class NetworkLayer : Layer, INetworkLayer
             .SetDestinationAddress(connectPrimitive.DestinationAddress)
             .SetType(PrimitiveType.Ind)
             .ToConnectPrimitive();
-        Instance.SendMessageToDataLinkLayer(connectIndMessage);
+        Instance.SendPacketToDataLinkLayer(connectIndMessage.GeneratePacket());
     }
 
     public void Disconnect(DisconnectPrimitive disconnectPrimitive)
     {
-        Instance.SendMessageToDataLinkLayer(disconnectPrimitive);
+        Instance.SendPacketToDataLinkLayer(disconnectPrimitive.GeneratePacket());
     }
 
     public void SendData(DataPrimitive dataPrimitive)
     {
-        Instance.SendMessageToDataLinkLayer(dataPrimitive);
+        var segmenter = new PacketSegmenter(dataPrimitive);
+        _currentPacketSegmenter = segmenter;
+        Instance.SendPacketToDataLinkLayer(segmenter.ConstructNextPacket());
+        WaitForTimeout();
     }
+
+    private void WaitForTimeout()
+    {
+        _currentPacketSegmenter?.WaitForAcknowledgementTimeout();
+
+        if (_currentPacketSegmenter != null && !_currentPacketSegmenter.LastSegmentWasAcknowledged())
+        {
+            //TODO : Send disconnect
+        }
+    }
+
     
     private bool IsNetworkServiceError(int source) => source % 27 == 0;
+
+    private NetworkLayer() { }
 }
