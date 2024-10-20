@@ -1,4 +1,5 @@
 using tp1_network_service.Builder;
+using tp1_network_service.Layers;
 using tp1_network_service.Packets.Children;
 using tp1_network_service.Primitives;
 using tp1_network_service.Primitives.Children;
@@ -7,7 +8,7 @@ namespace tp1_network_service.Packets;
 
 internal class PacketSegmenter
 {
-    private const int MaxPacketSize = 128;
+    private const int MaxPacketSizeBytes = 128;
     private const int AcknowledgementTimeoutSeconds = 5;
 
     public DataPrimitive Primitive { get; set; }
@@ -43,20 +44,18 @@ internal class PacketSegmenter
 
     public DataPacket ConstructNextPacket()
     {
-        //todo : create segmentation info and segment (data)
-        
-        SegmentationIndex++;
-        return new PacketBuilder().SetConnectionNumber(Primitive.ConnectionNumber)
+        var builder = new PacketBuilder().SetConnectionNumber(Primitive.ConnectionNumber)
             .SetType(PacketType.Data)
-            .SetSegmentationInfo(new SegmentationInfo())
-            .SetData(Data)
-            .ToDataPacket();
+            .SetSegmentationInfo(BuildSegmentationInfo())
+            .SetData(BuildSegment());
+        SegmentationIndex += MaxPacketSizeBytes;
+        return builder.ToDataPacket();
     }
 
     public void WaitForAcknowledgementTimeout()
     {
         _segmentationIndexOnTimeoutStart = SegmentationIndex;
-        //TODO : wait timer
+        Thread.Sleep(AcknowledgementTimeoutSeconds * 1000);
     }
 
     public bool LastSegmentWasAcknowledged()
@@ -66,6 +65,24 @@ internal class PacketSegmenter
 
     public bool PacketNeedsToBeSegmented()
     {
-        return Primitive.Data.Length > MaxPacketSize;
+        return Primitive.Data.Length > MaxPacketSizeBytes;
+    }
+
+    private SegmentationInfo BuildSegmentationInfo()
+    {
+        var currentPacketNumber = (byte)(SegmentationIndex % 8);
+        if (SegmentationIndex + MaxPacketSizeBytes >= Primitive.Data.Length)
+        {
+            NetworkLayer.Instance.CancelTimeout();
+            return new SegmentationInfo(currentPacketNumber, false);
+        }
+        return new SegmentationInfo(currentPacketNumber, true, (byte)(currentPacketNumber + 1));
+    }
+
+    private byte[] BuildSegment()
+    {
+        var segment = new byte[MaxPacketSizeBytes];
+        Array.Copy(Primitive.Data, SegmentationIndex, segment, 0, MaxPacketSizeBytes);
+        return segment;
     }
 }

@@ -14,6 +14,7 @@ internal class NetworkLayer : Layer, INetworkLayer
     private static NetworkLayer? _instance;
     private (int, int)? _waitingConnectionNumberAndDestination;
     private readonly object _waitingConnectionNumberAndDestinationLock = new();
+    private readonly object _packetSegmentationTimeoutLock = new();
     private PacketSegmenter? _currentPacketSegmenter; 
     public FilePaths DataLinkPaths { private get; set; }
 
@@ -98,17 +99,32 @@ internal class NetworkLayer : Layer, INetworkLayer
         var segmenter = new PacketSegmenter(dataPrimitive);
         _currentPacketSegmenter = segmenter;
         Instance.SendPacketToDataLinkLayer(segmenter.ConstructNextPacket());
-        WaitForTimeout();
+        WaitForTimeout(dataPrimitive);
     }
 
-    private void WaitForTimeout()
+    public void CancelTimeout()
     {
-        _currentPacketSegmenter?.WaitForAcknowledgementTimeout();
-
-        if (_currentPacketSegmenter != null && !_currentPacketSegmenter.LastSegmentWasAcknowledged())
+        lock (_packetSegmentationTimeoutLock)
         {
-            //TODO : Send disconnect
+            _currentPacketSegmenter = null;
         }
+    }
+
+    private void WaitForTimeout(DataPrimitive dataPrimitive)
+    {
+        lock (_packetSegmentationTimeoutLock)
+        {
+            _currentPacketSegmenter?.WaitForAcknowledgementTimeout();
+            if (_currentPacketSegmenter == null || _currentPacketSegmenter.LastSegmentWasAcknowledged()) return;
+        }
+
+        var disconnect = new PrimitiveBuilder()
+                .SetConnectionNumber(dataPrimitive.ConnectionNumber)
+                .SetType(PrimitiveType.Ind)
+                .SetReason(DisconnectReason.Distant)
+                .ToDisconnectPrimitive();
+            
+        TransportLayer.Instance.Disconnect(disconnect);
     }
 
     
