@@ -32,7 +32,7 @@ public static class DataSegmenter
             .ConnectionNumber(primitive.ConnectionNumber)
             .IsSegmented(true);
 
-        var sequenceNumber = 0;
+        var segments = new List<DataPacket>();
 
         for (var i = 0; i < primitive.Data.Length; i += DataPacketLength)
         {
@@ -41,16 +41,15 @@ public static class DataSegmenter
 
             var packet = packetBuilder
                 .IsSegmented(!isLastPacket)
-                .SequenceNumber(sequenceNumber)
-                .NextExpectedSequence(sequenceNumber == 7 ? 0 : sequenceNumber + 1)
+                .SequenceNumber(segments.Count % 8)
+                .NextExpectedSequence((segments.Count + 1) % 8)
                 .Data(chunk)
                 .ToDataPacket();
-
-            yield return packet;
-            sequenceNumber = sequenceNumber == 7
-                ? 0 
-                : sequenceNumber + 1;
+            
+            segments.Add(packet);
         }
+
+        return segments;
     }
     
     private static byte[] GetChunk(byte[] data, int offset, int chunkSize)
