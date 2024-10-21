@@ -2,7 +2,7 @@ using System.Text;
 
 namespace tp1_network_service.Utils;
 
-internal class FileManager ()
+public class FileManager
 {
     public static void Write(byte[] content, string filePath)
     {

@@ -1,14 +1,19 @@
+using tp1_network_service.Enum;
+
 namespace tp1_network_service.Packets.Abstract;
 
-internal abstract class Packet : CommunicationEntity
+public abstract class Packet
 {
-    protected Packet(PacketType type, int connectionNumber) : base(connectionNumber)
+    public int ConnectionNumber { get; }
+    public CommunicationType Type { get; }
+
+    protected Packet(int connectionNumber, CommunicationType type)
     {
+        ConnectionNumber = connectionNumber;
         Type = type;
     }
-    
-    public PacketType Type { get; set; }
 
+    public bool IsRequest() => Type == CommunicationType.Request;
+    public bool IsIndication() => Type == CommunicationType.Indication;
     public abstract byte[] Serialize();
-    public abstract void Handle();
 }
