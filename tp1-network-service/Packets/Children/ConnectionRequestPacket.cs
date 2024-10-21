@@ -1,3 +1,4 @@
+using tp1_network_service.Exceptions;
 using tp1_network_service.Packets.Abstract;
 
 namespace tp1_network_service.Packets.Children;

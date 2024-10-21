@@ -1,3 +1,6 @@
+using tp1_network_service.Exceptions;
+using tp1_network_service.Layers;
+using tp1_network_service.Layers.Network;
 using tp1_network_service.Packets.Abstract;
 
 namespace tp1_network_service.Packets.Children;
@@ -20,7 +23,9 @@ internal class DataAcknowledgmentPacket : Packet
 
     public override void Handle()
     {
-        throw new NotImplementedException();
-        //If the last packet has been received, set segmenter to null in networklayer
+        if (ReceptionSuccess)
+        {
+            NetworkLayer.Instance.PendingSendingDataManager.AcknowledgeLastPacket();
+        }
     }
 }

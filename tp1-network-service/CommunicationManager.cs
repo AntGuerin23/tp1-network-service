@@ -1,4 +1,6 @@
 using tp1_network_service.Layers;
+using tp1_network_service.Layers.Network;
+using tp1_network_service.Layers.Transport;
 
 namespace tp1_network_service;
 
@@ -6,26 +8,26 @@ public class CommunicationManager
 {
     public void SetUpperLayerPaths(FilePaths paths)
     {
-        TransportLayer.Instance.UpperLayerPaths = paths;
+        TransportLayer.Instance.SetPaths(paths);
     }
 
     public void SetDataLinkPaths(FilePaths paths)
     {
-        NetworkLayer.Instance.DataLinkPaths = paths;
+        NetworkLayer.Instance.SetPaths(paths);
     }
 
     public void StartCommunication()
     {
         try
         {
-            NetworkLayer.Instance.StartListening();
-            TransportLayer.Instance.StartListening();
+            NetworkLayer.Instance.Start();
+            TransportLayer.Instance.Stop();
         }
         catch (Exception e)
         {
             Console.WriteLine("An error occured : " + e.Message);
-            NetworkLayer.Instance.StopListening();
-            TransportLayer.Instance.StopListening();
+            NetworkLayer.Instance.Start();
+            TransportLayer.Instance.Stop();
         } 
     }
 }

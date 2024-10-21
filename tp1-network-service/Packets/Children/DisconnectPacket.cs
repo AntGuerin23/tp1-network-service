@@ -1,6 +1,7 @@
 using tp1_network_service.Builder;
 using tp1_network_service.Enums;
 using tp1_network_service.Layers;
+using tp1_network_service.Layers.Transport;
 using tp1_network_service.Packets.Abstract;
 using tp1_network_service.Primitives;
 
@@ -27,6 +28,6 @@ internal class DisconnectPacket : AddressedPacket
             .SetType(PrimitiveType.Ind)
             .SetReason(DisconnectReason.Distant)
             .ToDisconnectPrimitive();
-        TransportLayer.Instance.Disconnect(disconnectPrimitive);
+        TransportLayer.Instance.HandleFromLayer(disconnectPrimitive);
     }
 }

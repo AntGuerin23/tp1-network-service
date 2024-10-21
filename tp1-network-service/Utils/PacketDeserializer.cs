@@ -1,14 +1,15 @@
 using tp1_network_service.Builder;
 using tp1_network_service.Enums;
+using tp1_network_service.Exceptions;
 using tp1_network_service.Packets;
 using tp1_network_service.Packets.Abstract;
 using static tp1_network_service.Packets.PacketType;
 
 namespace tp1_network_service.Utils;
 
-internal class Deserializer
+internal class PacketDeserializer
 {
-    public static Packet DeserializePacket(byte[] rawInput)
+    public static Packet Deserialize(byte[] rawInput)
     {
          var builder = new PacketBuilder();
          var type = FindActualType(rawInput[1]);

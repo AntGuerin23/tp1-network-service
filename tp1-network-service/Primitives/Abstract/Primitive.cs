@@ -1,6 +1,4 @@
-using tp1_network_service.Packets.Abstract;
-
-namespace tp1_network_service.Primitives;
+namespace tp1_network_service.Primitives.Abstract;
 
 internal abstract class Primitive : CommunicationEntity
 {
