@@ -1,5 +1,5 @@
 ﻿using tp1_network_service;
-using tp1_network_service.Layers;
+using tp1_network_service.Internal.Layers;
 
 var path = Environment.CurrentDirectory + "/Resources";
 

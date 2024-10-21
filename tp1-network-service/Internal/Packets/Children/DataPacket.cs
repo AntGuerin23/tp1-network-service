@@ -1,0 +1,26 @@
+using tp1_network_service.Internal.Exceptions;
+using tp1_network_service.Internal.Packets.Abstract;
+
+namespace tp1_network_service.Internal.Packets.Children;
+
+internal class DataPacket : Packet
+{
+    public byte[] Data { get; set; }
+    public SegmentationInfo SegInfo { get; set; }
+    
+    public DataPacket(PacketType type, int connectionNumber, byte[] data, SegmentationInfo segInfo) : base(type, connectionNumber)
+    {
+        Data = data;
+        SegInfo = segInfo;
+    }
+    
+    public override byte[] Serialize()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Handle()
+    {
+        throw new UserBNotImplementedException();
+    }
+}
