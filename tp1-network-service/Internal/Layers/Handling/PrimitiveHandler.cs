@@ -1,7 +1,7 @@
 using tp1_network_service.Internal.Primitives.Abstract;
 using tp1_network_service.Internal.Primitives.Children;
 
-namespace tp1_network_service.Internal.Layers;
+namespace tp1_network_service.Internal.Layers.Handling;
 
 internal class PrimitiveHandler(IPrimitiveHandlerStrategy strategy)
 {

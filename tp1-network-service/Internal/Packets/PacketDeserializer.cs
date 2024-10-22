@@ -1,11 +1,11 @@
+using tp1_network_service.External.Exceptions;
 using tp1_network_service.Internal.Builder;
 using tp1_network_service.Internal.Enums;
-using tp1_network_service.Internal.Exceptions;
-using tp1_network_service.Internal.Packets;
 using tp1_network_service.Internal.Packets.Abstract;
+using tp1_network_service.Internal.Packets.Segmentation;
 using static tp1_network_service.Internal.Packets.PacketType;
 
-namespace tp1_network_service.Internal.Utils;
+namespace tp1_network_service.Internal.Packets;
 
 internal class PacketDeserializer
 {

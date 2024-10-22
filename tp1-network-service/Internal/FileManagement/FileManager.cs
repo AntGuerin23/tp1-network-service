@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace tp1_network_service.Internal.Utils;
+namespace tp1_network_service.Internal.FileManagement;
 
 internal class FileManager ()
 {

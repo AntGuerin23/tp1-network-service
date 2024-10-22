@@ -1,4 +1,4 @@
-namespace tp1_network_service.Internal.Packets;
+namespace tp1_network_service.Internal.Packets.Segmentation;
 
 internal class SegmentationInfo
 {

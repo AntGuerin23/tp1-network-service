@@ -2,7 +2,7 @@ using tp1_network_service.Internal.Builder;
 using tp1_network_service.Internal.Packets.Children;
 using tp1_network_service.Internal.Primitives.Children;
 
-namespace tp1_network_service.Internal.Packets;
+namespace tp1_network_service.Internal.Packets.Segmentation;
 
 internal class PacketSegmenter
 {

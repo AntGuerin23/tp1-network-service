@@ -1,8 +1,8 @@
-using tp1_network_service.Internal.Layers;
+using tp1_network_service.Internal;
 using tp1_network_service.Internal.Layers.Network;
 using tp1_network_service.Internal.Layers.Transport;
 
-namespace tp1_network_service;
+namespace tp1_network_service.External;
 
 public class CommunicationManager
 {
@@ -29,5 +29,10 @@ public class CommunicationManager
             NetworkLayer.Instance.Stop();
             TransportLayer.Instance.Stop();
         } 
+    }
+
+    public void StartBSimulation(FilePaths paths, bool enableEdgeCases = true)
+    {
+        new UserBSimulator(paths).Simulate(enableEdgeCases);
     }
 }

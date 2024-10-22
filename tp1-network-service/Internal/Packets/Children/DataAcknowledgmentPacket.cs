@@ -1,6 +1,7 @@
-using tp1_network_service.Internal.Exceptions;
+using tp1_network_service.External.Exceptions;
 using tp1_network_service.Internal.Layers.Network;
 using tp1_network_service.Internal.Packets.Abstract;
+using tp1_network_service.Internal.Packets.Segmentation;
 
 namespace tp1_network_service.Internal.Packets.Children;
 
@@ -12,7 +13,7 @@ internal class DataAcknowledgmentPacket : Packet
     public DataAcknowledgmentPacket(PacketType type, int connectionNumber, SegmentationInfo segInfo) : base(type, connectionNumber)
     {
         ReceptionSuccess = segInfo.CurrentSegmentNumber != 4;
-        NextSegmentNumber = segInfo.NextSegmentNumber;
+        NextSegmentNumber = ReceptionSuccess ? segInfo.NextSegmentNumber : segInfo.CurrentSegmentNumber;
     }
     
     public override byte[] Serialize()

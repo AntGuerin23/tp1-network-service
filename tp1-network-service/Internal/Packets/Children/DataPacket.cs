@@ -1,5 +1,6 @@
-using tp1_network_service.Internal.Exceptions;
+using tp1_network_service.External.Exceptions;
 using tp1_network_service.Internal.Packets.Abstract;
+using tp1_network_service.Internal.Packets.Segmentation;
 
 namespace tp1_network_service.Internal.Packets.Children;
 

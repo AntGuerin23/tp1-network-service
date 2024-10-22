@@ -1,4 +1,5 @@
 using tp1_network_service.Internal.Packets;
+using tp1_network_service.Internal.Packets.Segmentation;
 using tp1_network_service.Internal.Primitives.Children;
 
 namespace tp1_network_service.Internal.Layers.Network;

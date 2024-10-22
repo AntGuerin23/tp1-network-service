@@ -1,4 +1,4 @@
-namespace tp1_network_service.Internal.Layers;
+namespace tp1_network_service.External;
 
 public class FilePaths(string input, string output)
 {

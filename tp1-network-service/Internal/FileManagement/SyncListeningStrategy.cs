@@ -1,6 +1,4 @@
-using tp1_network_service.Internal.Utils;
-
-namespace tp1_network_service.Internal.Layers.FileListeners;
+namespace tp1_network_service.Internal.FileManagement;
 
 internal class SyncListeningStrategy : IListeningStrategy
 {
