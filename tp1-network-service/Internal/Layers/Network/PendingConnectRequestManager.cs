@@ -14,4 +14,15 @@ internal class PendingConnectRequestManager
             _pendingConnectRequest = connect;
         }
     }
+
+    public ConnectPrimitive? GetAndResetConnection()
+    {
+        ConnectPrimitive? connect;
+        lock (_pendingConnectRequestLock)
+        {
+            connect = _pendingConnectRequest;
+            _pendingConnectRequest = null;
+        }
+        return connect;
+    }
 }

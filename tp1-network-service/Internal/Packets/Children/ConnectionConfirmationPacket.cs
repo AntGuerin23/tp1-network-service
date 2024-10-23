@@ -1,5 +1,10 @@
 using tp1_network_service.External.Exceptions;
+using tp1_network_service.Internal.Builder;
+using tp1_network_service.Internal.Enums;
+using tp1_network_service.Internal.Layers.Network;
+using tp1_network_service.Internal.Layers.Transport;
 using tp1_network_service.Internal.Packets.Abstract;
+using tp1_network_service.Internal.Primitives;
 
 namespace tp1_network_service.Internal.Packets.Children;
 
@@ -14,23 +19,24 @@ internal class ConnectionConfirmationPacket : AddressedPacket
 
     public override void Handle()
     {
-        //todo
-        // var waitingConnection = NetworkLayer.Instance.GetAndResetWaitingConnectionNumberAndDestination();
-        // if (waitingConnection != null && waitingConnection.Value.Item1 != ConnectionNumber)
-        // {
-        //     var disconnectPrimitive = new PrimitiveBuilder().SetConnectionNumber(waitingConnection.Value.Item1)
-        //         .SetSourceAddress(waitingConnection.Value.Item2)
-        //         .SetDestinationAddress(DestinationAddress)
-        //         .SetType(PrimitiveType.Ind)
-        //         .ToDisconnectPrimitive();
-        //     TransportLayer.Instance.Disconnect(disconnectPrimitive);
-        // }
-        //
-        // var connectPrimitive = new PrimitiveBuilder().SetConnectionNumber(ConnectionNumber)
-        //     .SetSourceAddress(SourceAddress)
-        //     .SetDestinationAddress(DestinationAddress)
-        //     .SetType(PrimitiveType.Conf)
-        //     .ToConnectPrimitive();
-        // TransportLayer.Instance.ConfirmConnection(connectPrimitive);
+        var pendingConnect = NetworkLayer.Instance.PendingConnectRequestManager.GetAndResetConnection();
+        if (pendingConnect != null && pendingConnect.ConnectionNumber != ConnectionNumber)
+        {
+            var disconnectPrimitive = new PrimitiveBuilder()
+                .SetConnectionNumber(pendingConnect.ConnectionNumber)
+                .SetSourceAddress(pendingConnect.DestinationAddress)
+                .SetDestinationAddress(pendingConnect.SourceAddress)
+                .SetType(PrimitiveType.Ind)
+                .SetReason(DisconnectReason.NetworkService)
+                .ToDisconnectPrimitive();
+            TransportLayer.Instance.HandleFromLayer(disconnectPrimitive);
+        }
+        var connectPrimitive = new PrimitiveBuilder()
+            .SetConnectionNumber(ConnectionNumber)
+            .SetSourceAddress(SourceAddress)
+            .SetDestinationAddress(DestinationAddress)
+            .SetType(PrimitiveType.Conf)
+            .ToConnectPrimitive();
+        TransportLayer.Instance.HandleFromLayer(connectPrimitive);
     }
 }
