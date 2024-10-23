@@ -12,7 +12,7 @@ namespace tp1_network_service.Internal;
 internal class UserBSimulator
 {
     private const byte AcknowledgeSuccessByte = 0b00000001;
-    private const byte AcknowledgeFailureByte = 0b00001001; 
+    private const byte AcknowledgeFailureByte = 0b00001001;
     
     private readonly FilePaths _filePaths;
     private bool _edgeCasesEnabled;
@@ -21,11 +21,7 @@ internal class UserBSimulator
     {
         _edgeCasesEnabled = enableEdgeCases;
         var listener = new FileListener(new SyncListeningStrategy());
-        while (true)
-        {
-            listener.Listen(_filePaths.Input, HandlePacket);
-            Thread.Sleep(1000);
-        }
+        listener.Listen(_filePaths.Input, HandlePacket);
     }
 
     public UserBSimulator(FilePaths filePaths)

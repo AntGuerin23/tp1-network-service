@@ -9,7 +9,14 @@ internal class ConnectionRequestPacket : AddressedPacket
     
     public override byte[] Serialize()
     {
-        throw new NotImplementedException();
+        return
+        [
+            (byte)ConnectionNumber,
+            (byte)Type,
+            (byte)SourceAddress,
+            (byte)DestinationAddress
+        ];
+
     }
 
     public override void Handle()

@@ -15,7 +15,7 @@ internal class NetworkLayer : ILayer
     
     private FilePaths? _dataLinkPaths;
     private static NetworkLayer? _instance;
-    private readonly FileListener _fileListener = new(new AsyncListeningStrategy());
+    private readonly FileListener _fileListener = new(new SyncListeningStrategy());
     private readonly PrimitiveHandler _primitiveHandler = new(new NetworkPrimitiveHandlerStrategy());
 
     public static NetworkLayer Instance

@@ -7,9 +7,9 @@ internal class TransportConnection
     public TransportConnectionStatus Status { get; set; }
     public byte[] PendingData { get; set; }
 
-    public TransportConnection(TransportConnectionStatus status)
+    public TransportConnection(TransportConnectionStatus status, byte[] data)
     {
         Status = status;
-        PendingData = [];
+        PendingData = data;
     }
 }

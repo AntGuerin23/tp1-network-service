@@ -14,7 +14,13 @@ internal class ConnectionConfirmationPacket : AddressedPacket
     
     public override byte[] Serialize()
     {
-        throw new UserBNotImplementedException();
+        return
+        [
+            (byte)ConnectionNumber,
+            (byte)Type,
+            (byte)SourceAddress,
+            (byte)DestinationAddress
+        ];
     }
 
     public override void Handle()
@@ -24,8 +30,7 @@ internal class ConnectionConfirmationPacket : AddressedPacket
         {
             var disconnectPrimitive = new PrimitiveBuilder()
                 .SetConnectionNumber(pendingConnect.ConnectionNumber)
-                .SetSourceAddress(pendingConnect.DestinationAddress)
-                .SetDestinationAddress(pendingConnect.SourceAddress)
+                .SetResponseAddress(DestinationAddress)
                 .SetType(PrimitiveType.Ind)
                 .SetReason(DisconnectReason.NetworkService)
                 .ToDisconnectPrimitive();
@@ -33,8 +38,7 @@ internal class ConnectionConfirmationPacket : AddressedPacket
         }
         var connectPrimitive = new PrimitiveBuilder()
             .SetConnectionNumber(ConnectionNumber)
-            .SetSourceAddress(SourceAddress)
-            .SetDestinationAddress(DestinationAddress)
+            .SetResponseAddress(DestinationAddress)
             .SetType(PrimitiveType.Conf)
             .ToConnectPrimitive();
         TransportLayer.Instance.HandleFromLayer(connectPrimitive);

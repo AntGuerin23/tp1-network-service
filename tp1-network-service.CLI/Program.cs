@@ -1,9 +1,7 @@
-﻿using tp1_network_service;
-using tp1_network_service.External;
-using tp1_network_service.Internal.Layers;
+﻿using tp1_network_service.External;
 
 var path = Environment.CurrentDirectory + "/Resources";
-var enableEdgeCases = true;
+var enableEdgeCases = false;
 
 var communicationManager = new CommunicationManager();
 communicationManager.StartBSimulation(new FilePaths($"{path}/L_ECR.txt", $"{path}/L_LEC.txt"), enableEdgeCases);

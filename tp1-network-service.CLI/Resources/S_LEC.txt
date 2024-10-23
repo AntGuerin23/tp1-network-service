@@ -1,2 +1,1 @@
-S_LEC Test1
-S_LEC Test2
+DATA

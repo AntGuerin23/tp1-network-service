@@ -35,7 +35,9 @@ internal class PacketDeserializer
                      .SetReason((DisconnectReason) rawInput[4]);
                  return builder.ToDisconnectPacket();
              case ConnectRequest:
-                 throw new UserBNotImplementedException();
+                 builder.SetSourceAddress(rawInput[2])
+                     .SetDestinationAddress(rawInput[3]);
+                 return builder.ToConnectionRequestPacket();
              case Data:
                  throw new UserBNotImplementedException();
              default:
@@ -45,6 +47,7 @@ internal class PacketDeserializer
 
     private static PacketType FindActualType(byte typeByte)
     {
+        // TODO : Checker le type de retour DataAcknowledgment
         var type = (PacketType) typeByte;
         return
             Enum.IsDefined(type)

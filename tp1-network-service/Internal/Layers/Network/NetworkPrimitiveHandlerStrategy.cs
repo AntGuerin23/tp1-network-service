@@ -24,7 +24,6 @@ internal class NetworkPrimitiveHandlerStrategy : IPrimitiveHandlerStrategy
 
     public void HandleDataPrimitive(DataPrimitive primitive)
     {
-        if (!primitive.IsRequest()) return;
         var success = NetworkLayer.Instance.PendingSendingDataManager.StartSendingData(primitive);
         if (!success)
         {

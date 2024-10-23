@@ -2,7 +2,7 @@ using System.Text;
 
 namespace tp1_network_service.Internal.FileManagement;
 
-internal class FileManager ()
+internal class FileManager
 {
     public static void Write(byte[] content, string filePath)
     {
@@ -11,6 +11,7 @@ internal class FileManager ()
             if (Exists(filePath))
             {
                 var instruction = Encoding.UTF8.GetString(content, 0, content.Length);
+                Console.WriteLine($"FROM {filePath} : {instruction}");
                 File.AppendAllText(filePath, string.Format("{0}{1}", instruction, Environment.NewLine));
                 return;
             }

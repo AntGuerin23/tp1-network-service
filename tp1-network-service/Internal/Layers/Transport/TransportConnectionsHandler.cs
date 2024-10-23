@@ -7,7 +7,7 @@ internal class TransportConnectionsHandler
     private readonly Dictionary<int, TransportConnection> _connections = new();
     private readonly object _connectionsLock = new();
 
-    public int CreateWaitingConnection()
+    public int CreateWaitingConnection(byte[] data)
     {
         Random random = new();
         int connectionNumber;
@@ -18,7 +18,7 @@ internal class TransportConnectionsHandler
                 connectionNumber = random.Next(0, 256);
             } while (_connections.ContainsKey(connectionNumber));
             
-            _connections[connectionNumber] = new TransportConnection(TransportConnectionStatus.Waiting);
+            _connections[connectionNumber] = new TransportConnection(TransportConnectionStatus.Waiting, data);
         }
         return connectionNumber;
     }
@@ -32,8 +32,17 @@ internal class TransportConnectionsHandler
             {
                 _connections[connectionNumber].Status = TransportConnectionStatus.Confirmed;
                 pendingData = _connections[connectionNumber].PendingData;
+                _connections[connectionNumber].PendingData = [];
             }
         }
         return pendingData;
+    }
+
+    public void CloseConnection(int connectionNumber)
+    {
+        lock (_connectionsLock)
+        {
+            _connections.Remove(connectionNumber);
+        }
     }
 }

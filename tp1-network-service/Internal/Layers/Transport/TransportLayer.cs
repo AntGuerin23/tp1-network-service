@@ -51,11 +51,11 @@ internal class TransportLayer : ILayer
 
     public void HandleFromFile(byte[] data)
     {
-        var connectionNumber = ConnectionsHandler.CreateWaitingConnection();
+        var connectionNumber = ConnectionsHandler.CreateWaitingConnection(data);
         var connectRequest = new PrimitiveBuilder()
             .SetConnectionNumber(connectionNumber)
-            .SetSourceAddress(127) // TODO : Generate random 1-255
-            .SetDestinationAddress(128) // TODO : Generate random 1-255
+            .SetSourceAddress(new Random().Next(1, 256))
+            .SetDestinationAddress(new Random().Next(1, 256))
             .SetType(PrimitiveType.Req)
             .ToConnectPrimitive();
         NetworkLayer.Instance.HandleFromLayer(connectRequest);
