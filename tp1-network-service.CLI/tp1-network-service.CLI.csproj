@@ -14,21 +14,21 @@
 
     <ItemGroup>
         <None Remove="Resources\S_ECR.txt" />
-        <Content Include="Resources\S_ECR.txt">
+        <EmbeddedResource Include="Resources\S_ECR.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
+        </EmbeddedResource>
         <None Remove="Resources\S_LEC.txt" />
-        <Content Include="Resources\S_LEC.txt">
+        <EmbeddedResource Include="Resources\S_LEC.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
+        </EmbeddedResource>
         <None Remove="Resources\L_LEC.bin" />
-        <Content Include="Resources\L_LEC.bin">
+        <EmbeddedResource Include="Resources\L_LEC.bin">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
+        </EmbeddedResource>
         <None Remove="Resources\L_ECR.bin" />
-        <Content Include="Resources\L_ECR.bin">
+        <EmbeddedResource Include="Resources\L_ECR.bin">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
+        </EmbeddedResource>
     </ItemGroup>
 
 </Project>
