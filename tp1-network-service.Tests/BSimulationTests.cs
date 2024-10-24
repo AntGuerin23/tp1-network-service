@@ -26,7 +26,7 @@ public class BSimulationTests
             .ToConnectionRequestPacket();
         FileManager.WriteWithNewLine(packet.Serialize(), "b-input");
         
-        Thread.Sleep(500);
+        Thread.Sleep(100);
         var bytes = FileManager.ReadAndDeleteFirstLineOfFile("b-output");
         Assert.That(bytes, Is.EqualTo(new byte[]{0b00000001, 0b00001111, 0b00000001, 0b00000010}));
         var newPacket = PacketDeserializer.Deserialize(bytes);

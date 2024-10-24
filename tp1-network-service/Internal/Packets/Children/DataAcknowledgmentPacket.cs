@@ -1,4 +1,3 @@
-using tp1_network_service.External.Exceptions;
 using tp1_network_service.Internal.Layers.Network;
 using tp1_network_service.Internal.Packets.Abstract;
 using tp1_network_service.Internal.Packets.Segmentation;
@@ -29,7 +28,7 @@ internal class DataAcknowledgmentPacket : Packet
     {
         if (ReceptionSuccess)
         {
-            NetworkLayer.Instance.PendingSendingDataManager.AcknowledgeLastPacket();
+            NetworkLayer.Instance.DataSendingManager.AcknowledgeLastPacket(ConnectionNumber);
         }
     }
 }

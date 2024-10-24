@@ -15,7 +15,7 @@ internal class TransportConnectionsHandler
         {
             do
             {
-                connectionNumber = random.Next(0, 256);
+                connectionNumber = random.Next(0, 255);
             } while (_connections.ContainsKey(connectionNumber));
             
             _connections[connectionNumber] = new TransportConnection(TransportConnectionStatus.Waiting, data);

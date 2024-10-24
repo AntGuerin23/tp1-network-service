@@ -3,6 +3,8 @@ using tp1_network_service.External;
 using tp1_network_service.External.Exceptions;
 using tp1_network_service.Internal.FileManagement;
 using tp1_network_service.Internal.Layers.Handling;
+using tp1_network_service.Internal.Layers.Network.DataSending;
+using tp1_network_service.Internal.Layers.PendingConnection;
 using tp1_network_service.Internal.Packets;
 using tp1_network_service.Internal.Packets.Abstract;
 using tp1_network_service.Internal.Primitives.Abstract;
@@ -11,12 +13,12 @@ namespace tp1_network_service.Internal.Layers.Network;
 
 internal class NetworkLayer : ILayer
 {
-    public PendingConnectRequestManager PendingConnectRequestManager { get; } = new();
-    public PendingSendingDataManager PendingSendingDataManager { get; } = new();
+    public DataSendingManager DataSendingManager { get; } = new();
+    public PendingConnectRequestManager PendingConnectionRequestManager { get; } = new();
     
     private FilePaths? _dataLinkPaths;
     private static NetworkLayer? _instance;
-    private readonly FileListener _fileListener = new(new SyncListeningStrategy());
+    private readonly FileListener _fileListener = new(new AsyncListeningStrategy());
     private readonly PrimitiveHandler _primitiveHandler = new(new NetworkPrimitiveHandlerStrategy());
 
     public static NetworkLayer Instance
@@ -68,5 +70,4 @@ internal class NetworkLayer : ILayer
     }
     
     private NetworkLayer() { }
-
 }

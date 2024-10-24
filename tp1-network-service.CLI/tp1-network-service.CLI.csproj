@@ -13,22 +13,22 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Resources\L_ECR.txt" />
-      <Content Include="Resources\L_ECR.txt">
+        <None Remove="Resources\S_ECR.txt" />
+        <Content Include="Resources\S_ECR.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-      <None Remove="Resources\L_LEC.txt" />
-      <Content Include="Resources\L_LEC.txt">
+        </Content>
+        <None Remove="Resources\S_LEC.txt" />
+        <Content Include="Resources\S_LEC.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-      <None Remove="Resources\S_ECR.txt" />
-      <Content Include="Resources\S_ECR.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-      <None Remove="Resources\S_LEC.txt" />
-      <Content Include="Resources\S_LEC.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
+        </Content>
+        <None Remove="Resources\L_LEC.bin" />
+        <Content Include="Resources\L_LEC.bin">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <None Remove="Resources\L_ECR.bin" />
+        <Content Include="Resources\L_ECR.bin">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>

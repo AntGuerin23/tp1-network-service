@@ -19,5 +19,6 @@ internal class PrimitiveHandler(IPrimitiveHandlerStrategy strategy)
                 strategy.HandleDataPrimitive(data);
                 break;
         }
+
     }
 }

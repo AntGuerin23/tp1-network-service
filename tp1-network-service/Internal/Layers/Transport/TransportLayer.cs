@@ -54,8 +54,8 @@ internal class TransportLayer : ILayer
         var connectionNumber = ConnectionsHandler.CreateWaitingConnection(data);
         var connectRequest = new PrimitiveBuilder()
             .SetConnectionNumber(connectionNumber)
-            .SetSourceAddress(new Random().Next(1, 256))
-            .SetDestinationAddress(new Random().Next(1, 256))
+            .SetSourceAddress(new Random().Next(1, 255))
+            .SetDestinationAddress(new Random().Next(1, 255))
             .SetType(PrimitiveType.Req)
             .ToConnectPrimitive();
         NetworkLayer.Instance.HandleFromLayer(connectRequest);

@@ -108,6 +108,7 @@ internal class UserBSimulator
     {
         return new PacketBuilder()
             .SetConnectionNumber(packet.ConnectionNumber)
+            .SetType(PacketType.DataAcknowledgment)
             .SetSegmentationInfo(segInfo)
             .ToDataAcknowledgmentPacket();
     }

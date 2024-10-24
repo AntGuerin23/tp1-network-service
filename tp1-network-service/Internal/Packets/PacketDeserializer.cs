@@ -16,9 +16,7 @@ internal class PacketDeserializer
          builder
              .SetConnectionNumber(rawInput[0])
              .SetType(type);
-        
-        //TODO : validation
-
+         
          switch (type)
          {
              case ConnectConfirmation:

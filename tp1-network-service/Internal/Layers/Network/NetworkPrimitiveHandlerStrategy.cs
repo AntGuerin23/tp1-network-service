@@ -12,8 +12,8 @@ internal class NetworkPrimitiveHandlerStrategy : IPrimitiveHandlerStrategy
     public void HandleConnectPrimitive(ConnectPrimitive primitive)
     {
         if (!primitive.IsRequest()) return;
-        NetworkLayer.Instance.PendingConnectRequestManager.SetPendingConnect(primitive);
         NetworkLayer.Instance.SendPacket(primitive.GeneratePacket());
+        NetworkLayer.Instance.PendingConnectionRequestManager.WaitForResponse(primitive.ConnectionNumber);
     }
 
     public void HandleDisconnectPrimitive(DisconnectPrimitive primitive)
@@ -24,7 +24,7 @@ internal class NetworkPrimitiveHandlerStrategy : IPrimitiveHandlerStrategy
 
     public void HandleDataPrimitive(DataPrimitive primitive)
     {
-        var success = NetworkLayer.Instance.PendingSendingDataManager.StartSendingData(primitive);
+        var success = NetworkLayer.Instance.DataSendingManager.StartSendingData(primitive);
         if (!success)
         {
             TransportLayer.Instance.HandleFromLayer(new PrimitiveBuilder()

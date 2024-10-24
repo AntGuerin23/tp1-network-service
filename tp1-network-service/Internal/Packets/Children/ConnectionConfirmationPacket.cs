@@ -25,17 +25,9 @@ internal class ConnectionConfirmationPacket : AddressedPacket
 
     public override void Handle()
     {
-        var pendingConnect = NetworkLayer.Instance.PendingConnectRequestManager.GetAndResetConnection();
-        if (pendingConnect != null && pendingConnect.ConnectionNumber != ConnectionNumber)
-        {
-            var disconnectPrimitive = new PrimitiveBuilder()
-                .SetConnectionNumber(pendingConnect.ConnectionNumber)
-                .SetResponseAddress(DestinationAddress)
-                .SetType(PrimitiveType.Ind)
-                .SetReason(DisconnectReason.NetworkService)
-                .ToDisconnectPrimitive();
-            TransportLayer.Instance.HandleFromLayer(disconnectPrimitive);
-        }
+        var receivedBeforeTimeout = NetworkLayer.Instance.PendingConnectionRequestManager.ConfirmConnection(ConnectionNumber);
+        if (!receivedBeforeTimeout) return;
+        
         var connectPrimitive = new PrimitiveBuilder()
             .SetConnectionNumber(ConnectionNumber)
             .SetResponseAddress(DestinationAddress)
