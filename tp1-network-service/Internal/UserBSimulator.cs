@@ -1,3 +1,4 @@
+using System.Text;
 using tp1_network_service.External;
 using tp1_network_service.Internal.Builder;
 using tp1_network_service.Internal.Enums;
@@ -17,11 +18,13 @@ internal class UserBSimulator
     private readonly FilePaths _filePaths;
     private bool _edgeCasesEnabled;
     
-    public void Simulate(bool enableEdgeCases = true)
+    public void Simulate(CancellationToken cancellationToken, bool enableEdgeCases = true)
     {
         _edgeCasesEnabled = enableEdgeCases;
         var listener = new FileListener(new SyncListeningStrategy());
         listener.Listen(_filePaths.Input, HandlePacket);
+        while (!cancellationToken.IsCancellationRequested) { } 
+        listener.Stop();
     }
 
     public UserBSimulator(FilePaths filePaths)
@@ -32,10 +35,9 @@ internal class UserBSimulator
     private void HandlePacket(byte[] rawPacket)
     {
         var packet = PacketDeserializer.Deserialize(rawPacket);
-
         switch (packet)
         {
-            case DataPacket dataPacket: 
+            case DataPacket dataPacket:
                 OnDataPacket(dataPacket);
                 break;
             case ConnectionRequestPacket connectionPacket:
@@ -47,6 +49,7 @@ internal class UserBSimulator
     private void OnDataPacket(DataPacket packet)
     {
         if (EdgeCase(packet.ConnectionNumber % 15 == 0)) return;
+        Console.WriteLine($"User B - Received data : [{Encoding.UTF8.GetString(packet.Data)}]");
         WriteToOutput(BuildDataAckPacket(packet, GetAcknowledgementType(packet.SegInfo.CurrentSegmentNumber)));
     }
 
@@ -79,7 +82,7 @@ internal class UserBSimulator
 
     private void WriteToOutput(Packet packet)
     {
-        FileManager.Write(packet.Serialize(), _filePaths.Output);
+        FileManager.WriteWithNewLine(packet.Serialize(), _filePaths.Output);
     }
 
     private Packet BuildDisconnectPacket(AddressedPacket packet)

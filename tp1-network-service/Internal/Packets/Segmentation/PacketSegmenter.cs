@@ -7,7 +7,7 @@ namespace tp1_network_service.Internal.Packets.Segmentation;
 internal class PacketSegmenter
 {
     private const int MaxPacketSizeBytes = 128;
-    
+
     public bool HasNextSegment { get; set; }
     public DataPrimitive Primitive { get; set; }
     public int SegmentationIndex { get; set; }
@@ -16,6 +16,7 @@ internal class PacketSegmenter
     {
         Primitive = primitive;
         SegmentationIndex = 0;
+        HasNextSegment = true;
     }
     
     public DataPacket ConstructNextPacket()
@@ -35,7 +36,7 @@ internal class PacketSegmenter
         if (SegmentationIndex + MaxPacketSizeBytes >= Primitive.Data.Length)
         {
             HasNextSegment = false;
-            return new SegmentationInfo(currentPacketNumber, HasNextSegment);
+            return new SegmentationInfo(0, HasNextSegment, currentPacketNumber);
         }
 
         HasNextSegment = true;
@@ -44,8 +45,9 @@ internal class PacketSegmenter
 
     private byte[] BuildSegment()
     {
-        var segment = new byte[MaxPacketSizeBytes];
-        Array.Copy(Primitive.Data, SegmentationIndex, segment, 0, MaxPacketSizeBytes);
+        var length = Math.Min(MaxPacketSizeBytes, Primitive.Data.Length - SegmentationIndex);
+        var segment = new byte[length];
+        Array.Copy(Primitive.Data, SegmentationIndex, segment, 0, length);
         return segment;
     }
 }

@@ -1,3 +1,4 @@
+using System.Xml;
 using tp1_network_service.External;
 using tp1_network_service.External.Exceptions;
 using tp1_network_service.Internal.FileManagement;
@@ -63,7 +64,7 @@ internal class NetworkLayer : ILayer
     
     public void SendPacket(Packet packet)
     {
-        FileManager.Write(packet.Serialize(), _dataLinkPaths!.Output);
+        FileManager.WriteWithNewLine(packet.Serialize(), _dataLinkPaths!.Output);
     }
     
     private NetworkLayer() { }

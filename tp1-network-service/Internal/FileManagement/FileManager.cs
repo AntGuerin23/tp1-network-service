@@ -1,68 +1,62 @@
 using System.Text;
+using System.IO;
 
 namespace tp1_network_service.Internal.FileManagement;
 
 internal class FileManager
 {
-    public static void Write(byte[] content, string filePath)
-    {
-        try
-        {
-            if (Exists(filePath))
-            {
-                var instruction = Encoding.UTF8.GetString(content, 0, content.Length);
-                Console.WriteLine($"FROM {filePath} : {instruction}");
-                File.AppendAllText(filePath, string.Format("{0}{1}", instruction, Environment.NewLine));
-                return;
-            }
-            
-            throw new Exception();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Une erreur en survenue lors de l'écriture");
-            throw;
-        }
-    }
+    public const bool EnableLogging = false;
     
-    public static byte[] Read(string filePath)
+    public static void WriteWithNewLine(byte[] content, string filePath)
     {
-        try
+        if (!Exists(filePath)) throw new FileNotFoundException("Le fichier n'existe pas");
+        Log(content, filePath);
+        using (var stream = new FileStream(filePath, FileMode.Append))
         {
-            if (Exists(filePath))
-            {
-                var line = File.ReadLines(filePath).FirstOrDefault();
-                if (line != null)
-                {
-                    DeleteFirstLine(filePath);
-                    return Encoding.UTF8.GetBytes(line);
-                }
-                return [];
-            }
+            stream.Write(content, 0, content.Length);
+            stream.WriteByte((byte)'\n');
+        } 
+    }
 
-            Console.WriteLine($"Aucune action {filePath}");
-            return [];
-        }
-        catch (Exception e)
+    private static void Log(byte[] content, string filePath)
+    {
+        if (!EnableLogging) return;
+        var binaryString = string.Join("\n", content.Select(b => Convert.ToString(b, 2).PadLeft(8, '0')));
+        Console.WriteLine($"TO {filePath} :\n{binaryString}");
+    }
+
+    public static byte[] ReadAndDeleteFirstLineOfFile(string filePath)
+    {
+        if (!Exists(filePath)) throw new FileNotFoundException($"Fichier introuvable : {filePath}");
+        
+        var bytes = File.ReadAllBytes(filePath);
+
+        if (bytes.Length <= 0) return [];
+        var newLineIndex = FindNewLineIndex(bytes);
+
+        if (newLineIndex != 0)
         {
-            Console.WriteLine("Une erreur en survenue lors de la lecture");
-            return [];
+            File.WriteAllBytes(filePath, bytes.Skip(newLineIndex + 1).ToArray());
+            return bytes.Take(newLineIndex).ToArray();
         }
+        File.WriteAllText(filePath, null);
+        return bytes;
     }
 
     private static bool Exists(string fileName)
     {
         return File.Exists(fileName);
     }
-    
-    private static void DeleteFirstLine(string filePath)
+
+    private static int FindNewLineIndex(byte[] bytes)
     {
-        var lines = File.ReadAllLines(filePath);
-
-        if (lines.Length < 1) return;
-        var newLines = new string[lines.Length - 1];
-        Array.Copy(lines, 1, newLines, 0, newLines.Length);
-
-        File.WriteAllLines(filePath, newLines);
+        for (var i = 0; i < bytes.Length; i++)
+        {
+            if (bytes[i] == '\n')
+            {
+                return i;
+            }
+        }
+        return 0;
     }
 }

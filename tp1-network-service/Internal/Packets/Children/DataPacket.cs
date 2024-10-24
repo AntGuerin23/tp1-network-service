@@ -17,7 +17,13 @@ internal class DataPacket : Packet
     
     public override byte[] Serialize()
     {
-        throw new NotImplementedException();
+        var bytes = new List<byte>
+        {
+            (byte)ConnectionNumber,
+            SegInfo.Serialize()
+        };
+        bytes.AddRange(Data);
+        return bytes.ToArray();
     }
 
     public override void Handle()

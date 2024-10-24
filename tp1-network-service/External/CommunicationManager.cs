@@ -31,8 +31,14 @@ public class CommunicationManager
         } 
     }
 
-    public void StartBSimulation(FilePaths paths, bool enableEdgeCases = true)
+    public void Stop()
     {
-        new UserBSimulator(paths).Simulate(enableEdgeCases);
+        NetworkLayer.Instance.Stop();
+        TransportLayer.Instance.Stop();
+    }
+
+    public void StartBSimulation(FilePaths paths, CancellationToken cancellationToken, bool enableEdgeCases = true)
+    {
+        new UserBSimulator(paths).Simulate(cancellationToken, enableEdgeCases);
     }
 }

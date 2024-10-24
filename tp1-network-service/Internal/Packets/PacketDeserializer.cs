@@ -13,7 +13,6 @@ internal class PacketDeserializer
     {
          var builder = new PacketBuilder();
          var type = FindActualType(rawInput[1]);
-
          builder
              .SetConnectionNumber(rawInput[0])
              .SetType(type);
@@ -39,7 +38,8 @@ internal class PacketDeserializer
                      .SetDestinationAddress(rawInput[3]);
                  return builder.ToConnectionRequestPacket();
              case Data:
-                 throw new UserBNotImplementedException();
+                 builder.SetSegmentationInfo(new SegmentationInfo(rawInput[1])).SetData(rawInput[2..]);
+                 return builder.ToDataPacket();
              default:
                  throw new ArgumentOutOfRangeException();
          }
@@ -47,7 +47,6 @@ internal class PacketDeserializer
 
     private static PacketType FindActualType(byte typeByte)
     {
-        // TODO : Checker le type de retour DataAcknowledgment
         var type = (PacketType) typeByte;
         return
             Enum.IsDefined(type)

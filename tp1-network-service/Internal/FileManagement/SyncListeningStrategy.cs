@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace tp1_network_service.Internal.FileManagement;
 
 internal class SyncListeningStrategy : IListeningStrategy
@@ -6,12 +8,13 @@ internal class SyncListeningStrategy : IListeningStrategy
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            var data = FileManager.Read(filePath);
+            var data = FileManager.ReadAndDeleteFirstLineOfFile(filePath);
             if (data.Length != 0)
             {
+                var binaryString = string.Join("\n", data.Select(b => Convert.ToString(b, 2).PadLeft(8, '0')));
                 callback(data);
             }
-            Thread.Sleep(1000);
+            Thread.Sleep(100);
         } 
     }
 }

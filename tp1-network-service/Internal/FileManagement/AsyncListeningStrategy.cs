@@ -6,12 +6,12 @@ internal class AsyncListeningStrategy : IListeningStrategy
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            var data = FileManager.Read(filePath);
+            var data = FileManager.ReadAndDeleteFirstLineOfFile(filePath);
             if (data.Length != 0)
             {
                 new Thread(() => callback(data)).Start();
             }
-            Thread.Sleep(1000);
+            Thread.Sleep(100);
         } 
     }
 }

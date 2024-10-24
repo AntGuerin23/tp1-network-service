@@ -18,7 +18,11 @@ internal class DataAcknowledgmentPacket : Packet
     
     public override byte[] Serialize()
     {
-        throw new UserBNotImplementedException();
+        return
+        [
+            (byte)ConnectionNumber,
+            SegmentationInfo.SerializeAcknowledgment(ReceptionSuccess, NextSegmentNumber)
+        ];
     }
 
     public override void Handle()
