@@ -6,17 +6,20 @@ using tp1_network_service.Internal.Layers.Handling;
 using tp1_network_service.Internal.Layers.Network;
 using tp1_network_service.Internal.Primitives;
 using tp1_network_service.Internal.Primitives.Abstract;
+using tp1_network_service.Internal.Utils;
 
 namespace tp1_network_service.Internal.Layers.Transport;
 
 internal class TransportLayer : ILayer
 {
     public TransportConnectionsHandler ConnectionsHandler { get; } = new();
+    public TransportLogger Logger { get; } = new();
 
     private static TransportLayer? _instance;
     private FilePaths? _upperLayerPaths;
     private readonly FileListener _fileListener = new(new SyncListeningStrategy());
     private readonly PrimitiveHandler _primitiveHandler = new(new TransportPrimitiveHandlerStrategy());
+
     
     public static TransportLayer Instance
     {
@@ -33,6 +36,7 @@ internal class TransportLayer : ILayer
     public void SetPaths(FilePaths? paths)
     {
         _upperLayerPaths = paths;
+        Logger.SetFilePath(paths.Output);
     }
 
     public void Start()
@@ -58,6 +62,7 @@ internal class TransportLayer : ILayer
             .SetDestinationAddress(new Random().Next(1, 255))
             .SetType(PrimitiveType.Req)
             .ToConnectPrimitive();
+        Logger.LogNewWaitingConnection(connectRequest);
         NetworkLayer.Instance.HandleFromLayer(connectRequest);
     }
 

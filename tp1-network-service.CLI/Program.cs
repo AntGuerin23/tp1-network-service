@@ -1,7 +1,7 @@
 ﻿using tp1_network_service.External;
 
 var path = Environment.CurrentDirectory + "/Resources";
-var enableEdgeCases = false;
+var enableEdgeCases = true;
 var readFromConsole = false;
 var cancellationToken = new CancellationTokenSource();
 var communicationManager = new CommunicationManager();

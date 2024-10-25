@@ -7,6 +7,7 @@ using tp1_network_service.Internal.Packets;
 using tp1_network_service.Internal.Packets.Abstract;
 using tp1_network_service.Internal.Packets.Children;
 using tp1_network_service.Internal.Packets.Segmentation;
+using tp1_network_service.Internal.Utils;
 
 namespace tp1_network_service.Internal;
 
@@ -48,8 +49,11 @@ internal class UserBSimulator
 
     private void OnDataPacket(DataPacket packet)
     {
-        if (EdgeCase(packet.ConnectionNumber % 15 == 0)) return;
-        Console.WriteLine($"User B - Received data : [{Encoding.UTF8.GetString(packet.Data)}]");
+        if (EdgeCase(packet.ConnectionNumber % 15 == 0))
+        {
+            ConsoleLogger.DataPacketIgnored(packet.ConnectionNumber);
+            return;
+        }
         WriteToOutput(BuildDataAckPacket(packet, GetAcknowledgementType(packet.SegInfo.CurrentSegmentNumber)));
     }
 
@@ -64,10 +68,16 @@ internal class UserBSimulator
     
     private void OnConnectRequestPacket(ConnectionRequestPacket packet)
     {
-        if (EdgeCase(packet.SourceAddress % 19 == 0)) return;
+        ConsoleLogger.ConnectionRequestReceived(packet.ConnectionNumber, packet.SourceAddress, packet.DestinationAddress);
+        if (EdgeCase(packet.SourceAddress % 19 == 0))
+        {
+            ConsoleLogger.ConnectionRequestIgnored(packet.ConnectionNumber);
+            return;
+        }
 
         if (EdgeCase(packet.SourceAddress % 13 == 0))
         {
+            ConsoleLogger.ConnectionRequestRefused(packet.ConnectionNumber);
             WriteToOutput(BuildDisconnectPacket(packet));
             return;
         }
