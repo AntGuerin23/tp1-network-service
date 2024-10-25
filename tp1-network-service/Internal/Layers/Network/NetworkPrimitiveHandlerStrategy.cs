@@ -12,6 +12,15 @@ internal class NetworkPrimitiveHandlerStrategy : IPrimitiveHandlerStrategy
     public void HandleConnectPrimitive(ConnectPrimitive primitive)
     {
         if (!primitive.IsRequest()) return;
+        if (primitive.ConnectionNumber % 27 == 0)
+        {
+            //todo : log
+            TransportLayer.Instance.HandleFromLayer(new PrimitiveBuilder()
+                .SetConnectionNumber(primitive.ConnectionNumber)
+                .SetType(PrimitiveType.Ind)
+                .SetReason(DisconnectReason.NetworkService)
+                .ToDisconnectPrimitive());
+        }
         NetworkLayer.Instance.SendPacket(primitive.GeneratePacket());
         NetworkLayer.Instance.PendingConnectionRequestManager.WaitForResponse(primitive.ConnectionNumber);
     }
@@ -25,13 +34,10 @@ internal class NetworkPrimitiveHandlerStrategy : IPrimitiveHandlerStrategy
     public void HandleDataPrimitive(DataPrimitive primitive)
     {
         var success = NetworkLayer.Instance.DataSendingManager.StartSendingData(primitive);
-        if (!success)
-        {
-            TransportLayer.Instance.HandleFromLayer(new PrimitiveBuilder()
-                .SetConnectionNumber(primitive.ConnectionNumber)
-                .SetType(PrimitiveType.Ind)
-                .SetReason(DisconnectReason.Distant)
-                .ToDisconnectPrimitive());
-        }
+        TransportLayer.Instance.HandleFromLayer(new PrimitiveBuilder()
+            .SetConnectionNumber(primitive.ConnectionNumber)
+            .SetType(PrimitiveType.Ind)
+            .SetReason(success ? DisconnectReason.Success : DisconnectReason.Distant)
+            .ToDisconnectPrimitive());
     }
 }

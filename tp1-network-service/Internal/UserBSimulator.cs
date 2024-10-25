@@ -64,9 +64,9 @@ internal class UserBSimulator
     
     private void OnConnectRequestPacket(ConnectionRequestPacket packet)
     {
-        if (EdgeCase(packet.ConnectionNumber % 19 == 0)) return;
+        if (EdgeCase(packet.SourceAddress % 19 == 0)) return;
 
-        if (EdgeCase(packet.ConnectionNumber % 13 == 0))
+        if (EdgeCase(packet.SourceAddress % 13 == 0))
         {
             WriteToOutput(BuildDisconnectPacket(packet));
             return;

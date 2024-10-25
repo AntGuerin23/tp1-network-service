@@ -9,8 +9,9 @@ namespace tp1_network_service.Internal.Packets;
 
 internal class PacketDeserializer
 {
-    public static Packet Deserialize(byte[] rawInput)
+    public static Packet? Deserialize(byte[] rawInput)
     {
+        if (rawInput.Length <= 1) return null;
          var builder = new PacketBuilder();
          var type = FindActualType(rawInput[1]);
          builder

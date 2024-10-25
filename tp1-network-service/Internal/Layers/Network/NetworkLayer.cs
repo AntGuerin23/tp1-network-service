@@ -56,7 +56,7 @@ internal class NetworkLayer : ILayer
     public void HandleFromFile(byte[] data)
     {
         var packet = PacketDeserializer.Deserialize(data);
-        packet.Handle();
+        packet?.Handle();
     }
 
     public void HandleFromLayer(Primitive primitive)

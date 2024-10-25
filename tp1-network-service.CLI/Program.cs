@@ -6,7 +6,6 @@ var readFromConsole = false;
 var cancellationToken = new CancellationTokenSource();
 var communicationManager = new CommunicationManager();
 
-
 Start();
 if (readFromConsole) WriteData();
 else Console.ReadLine();

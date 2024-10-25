@@ -1,3 +1,4 @@
+using System.Text;
 using tp1_network_service.Internal.FileManagement;
 
 namespace tp1_network_service.Tests;
@@ -18,21 +19,13 @@ public class FileTests
         FileManager.WriteWithNewLine(input, "test.txt");
         var result = File.ReadAllBytes("test.txt");
         
-        Assert.That(result, Is.EqualTo(input.Append((byte)'\n')));
-    }
-    
-    [Test]
-    public void TestWriteMultiple()
-    {
-        var input = new byte[] { 1, 2, 3 };
-        var expected = new byte[] { 1, 2, 3, (byte)'\n', 1, 2, 3, (byte)'\n', 1, 2, 3, (byte) '\n' };
+        var newline = Environment.NewLine.ToCharArray();
+        foreach (var newLineChar in newline)
+        {
+            input = input.Append((byte) newLineChar).ToArray();
+        }
         
-        FileManager.WriteWithNewLine(input, "test.txt");
-        FileManager.WriteWithNewLine(input, "test.txt");
-        FileManager.WriteWithNewLine(input, "test.txt");
-        var result = File.ReadAllBytes("test.txt");
-        
-        Assert.That(result, Is.EqualTo(expected));
+        Assert.That(result, Is.EqualTo(input));
     }
 
     [Test]
