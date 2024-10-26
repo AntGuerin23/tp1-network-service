@@ -1,2 +1,0 @@
-T_ECR_L_LEC Test1
-T_ECR_L_LEC Test2
