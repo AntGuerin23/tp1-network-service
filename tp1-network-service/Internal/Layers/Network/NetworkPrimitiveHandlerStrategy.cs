@@ -22,8 +22,11 @@ internal class NetworkPrimitiveHandlerStrategy : IPrimitiveHandlerStrategy
                 .SetReason(DisconnectReason.NetworkService)
                 .ToDisconnectPrimitive());
         }
-        NetworkLayer.Instance.SendPacket(primitive.GeneratePacket());
-        NetworkLayer.Instance.PendingConnectionRequestManager.WaitForResponse(primitive);
+        else
+        {
+            NetworkLayer.Instance.SendPacket(primitive.GeneratePacket());
+            NetworkLayer.Instance.PendingConnectionRequestManager.WaitForResponse(primitive);
+        }
     }
 
     public void HandleDisconnectPrimitive(DisconnectPrimitive primitive)
