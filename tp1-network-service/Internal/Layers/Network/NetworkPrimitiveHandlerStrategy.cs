@@ -14,15 +14,16 @@ internal class NetworkPrimitiveHandlerStrategy : IPrimitiveHandlerStrategy
         if (!primitive.IsRequest()) return;
         if (primitive.ConnectionNumber % 27 == 0)
         {
-            //todo : log
             TransportLayer.Instance.HandleFromLayer(new PrimitiveBuilder()
                 .SetConnectionNumber(primitive.ConnectionNumber)
+                .SetDestinationAddress(primitive.DestinationAddress)
+                .SetSourceAddress(primitive.SourceAddress)
                 .SetType(PrimitiveType.Ind)
                 .SetReason(DisconnectReason.NetworkService)
                 .ToDisconnectPrimitive());
         }
         NetworkLayer.Instance.SendPacket(primitive.GeneratePacket());
-        NetworkLayer.Instance.PendingConnectionRequestManager.WaitForResponse(primitive.ConnectionNumber);
+        NetworkLayer.Instance.PendingConnectionRequestManager.WaitForResponse(primitive);
     }
 
     public void HandleDisconnectPrimitive(DisconnectPrimitive primitive)

@@ -9,9 +9,8 @@ namespace tp1_network_service.Internal.Packets;
 
 internal class PacketDeserializer
 {
-    public static Packet? Deserialize(byte[] rawInput)
+    public static Packet Deserialize(byte[] rawInput)
     {
-        if (rawInput.Length <= 1) return null;
          var builder = new PacketBuilder();
          var type = FindActualType(rawInput[1]);
          builder
@@ -37,14 +36,14 @@ internal class PacketDeserializer
                      .SetDestinationAddress(rawInput[3]);
                  return builder.ToConnectionRequestPacket();
              case Data:
-                 builder.SetSegmentationInfo(new SegmentationInfo(rawInput[1])).SetData(rawInput[2..]);
+                 builder.SetSegmentationInfo(new SegmentationInfo(rawInput[1])).SetData(rawInput[3..]);
                  return builder.ToDataPacket();
              default:
                  throw new ArgumentOutOfRangeException();
          }
     }
 
-    private static PacketType FindActualType(byte typeByte)
+    public static PacketType FindActualType(byte typeByte)
     {
         var type = (PacketType) typeByte;
         return

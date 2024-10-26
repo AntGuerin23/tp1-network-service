@@ -30,7 +30,8 @@ internal class ConnectionConfirmationPacket : AddressedPacket
         
         var connectPrimitive = new PrimitiveBuilder()
             .SetConnectionNumber(ConnectionNumber)
-            .SetResponseAddress(DestinationAddress)
+            .SetDestinationAddress(DestinationAddress)
+            .SetSourceAddress(SourceAddress)
             .SetType(PrimitiveType.Conf)
             .ToConnectPrimitive();
         TransportLayer.Instance.HandleFromLayer(connectPrimitive);

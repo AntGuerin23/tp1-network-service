@@ -2,6 +2,7 @@ using System.Xml;
 using tp1_network_service.External;
 using tp1_network_service.External.Exceptions;
 using tp1_network_service.Internal.FileManagement;
+using tp1_network_service.Internal.FileManagement.FileManagers;
 using tp1_network_service.Internal.Layers.Handling;
 using tp1_network_service.Internal.Layers.Network.DataSending;
 using tp1_network_service.Internal.Layers.PendingConnection;
@@ -18,7 +19,7 @@ internal class NetworkLayer : ILayer
     
     private FilePaths? _dataLinkPaths;
     private static NetworkLayer? _instance;
-    private readonly FileListener _fileListener = new(new AsyncListeningStrategy());
+    private readonly FileListener _fileListener = new(new AsyncListeningStrategy(new BinaryFileManager()));
     private readonly PrimitiveHandler _primitiveHandler = new(new NetworkPrimitiveHandlerStrategy());
 
     public static NetworkLayer Instance
@@ -56,7 +57,7 @@ internal class NetworkLayer : ILayer
     public void HandleFromFile(byte[] data)
     {
         var packet = PacketDeserializer.Deserialize(data);
-        packet?.Handle();
+        packet.Handle();
     }
 
     public void HandleFromLayer(Primitive primitive)
@@ -66,7 +67,7 @@ internal class NetworkLayer : ILayer
     
     public void SendPacket(Packet packet)
     {
-        FileManager.WriteWithNewLine(packet.Serialize(), _dataLinkPaths!.Output);
+        new BinaryFileManager().WriteWithNewLine(packet.Serialize(), _dataLinkPaths!.Output);
     }
     
     private NetworkLayer() { }

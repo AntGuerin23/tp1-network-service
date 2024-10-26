@@ -28,7 +28,9 @@ internal class DataAcknowledgmentPacket : Packet
     {
         if (ReceptionSuccess)
         {
-            NetworkLayer.Instance.DataSendingManager.AcknowledgeLastPacket(ConnectionNumber);
+            NetworkLayer.Instance.DataSendingManager.CancelAcknowledgementWait(ConnectionNumber);
+            if (NextSegmentNumber != 0) return;
+            NetworkLayer.Instance.DataSendingManager.TryDisconnect(ConnectionNumber);
         }
     }
 }

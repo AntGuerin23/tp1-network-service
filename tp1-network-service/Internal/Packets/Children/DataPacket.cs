@@ -22,6 +22,7 @@ internal class DataPacket : Packet
             (byte)ConnectionNumber,
             SegInfo.Serialize()
         };
+        bytes.Add((byte) Data.Length);
         bytes.AddRange(Data);
         return bytes.ToArray();
     }

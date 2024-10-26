@@ -2,6 +2,7 @@ using System.Text;
 using tp1_network_service.External.Exceptions;
 using tp1_network_service.Internal.Enums;
 using tp1_network_service.Internal.FileManagement;
+using tp1_network_service.Internal.FileManagement.FileManagers;
 using tp1_network_service.Internal.Primitives.Children;
 
 namespace tp1_network_service.Internal.Utils;
@@ -17,17 +18,17 @@ internal class TransportLogger
 
     public void LogNewWaitingConnection(ConnectPrimitive primitive)
     {
-        Write($"Connection request ({primitive.ConnectionNumber}) from {primitive.DestinationAddress} to {primitive.SourceAddress} : WAITING");
+        Write($"Connection request #{primitive.ConnectionNumber} from {primitive.SourceAddress} to {primitive.DestinationAddress} : WAITING");
     }
 
     public void LogNewConfirmedConnection(ConnectPrimitive primitive)
     {
-        Write($"Connection request ({primitive.ConnectionNumber}) from {primitive.DestinationAddress} to {primitive.SourceAddress} : CONFIRMED");
+        Write($"Connection request #{primitive.ConnectionNumber} to distant {primitive.SourceAddress} : CONFIRMED");
     }
 
     public void LogDataTransmission(int connectionNumber, byte[] data)
     {
-        Write($"Sending data to connection ({connectionNumber}) : {Encoding.UTF8.GetString(data)}");
+        Write($"Sending data to connection #{connectionNumber} : {Encoding.UTF8.GetString(data)}");
     }
 
     public void LogDisconnectIndication(DisconnectPrimitive primitive)
@@ -42,10 +43,10 @@ internal class TransportLogger
                 reasonText = "Network error";
                 break;
             case DisconnectReason.Success:
-                reasonText = "Data transmission is over.";
+                reasonText = "Data transmission successfully ended.";
                 break;
         }
-        Write($"Disconnect connection ({primitive.ConnectionNumber}) from {primitive.DestinationAddress} to {primitive.SourceAddress} : {reasonText}");
+        Write($"Disconnect connection #{primitive.ConnectionNumber} : {reasonText}");
     }
 
     private void Write(string content)
@@ -54,6 +55,6 @@ internal class TransportLogger
         {
             throw new FilePathNotSpecifiedException("Transport Layer : DataLink layer paths must be specified.");
         }
-        FileManager.WriteWithNewLine(Encoding.UTF8.GetBytes(content), _filePath);
+        new TextFileManager().WriteWithNewLine(Encoding.UTF8.GetBytes(content), _filePath);
     }
 }

@@ -23,7 +23,8 @@ internal class ConnectPrimitive : AddressedPrimitive
     public bool IsConfirmation() => Type == PrimitiveType.Conf;
 
 
-    public ConnectPrimitive(PrimitiveType type, int connectNumber, int source, int destination) : base(connectNumber, type, source, destination) { }
+    public ConnectPrimitive(PrimitiveType type, int connectNumber, int source, int destination) : base(
+        connectNumber, type, source, destination) { }
     
 
 

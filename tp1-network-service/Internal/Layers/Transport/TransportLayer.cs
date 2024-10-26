@@ -2,6 +2,7 @@ using tp1_network_service.External;
 using tp1_network_service.External.Exceptions;
 using tp1_network_service.Internal.Builder;
 using tp1_network_service.Internal.FileManagement;
+using tp1_network_service.Internal.FileManagement.FileManagers;
 using tp1_network_service.Internal.Layers.Handling;
 using tp1_network_service.Internal.Layers.Network;
 using tp1_network_service.Internal.Primitives;
@@ -17,7 +18,7 @@ internal class TransportLayer : ILayer
 
     private static TransportLayer? _instance;
     private FilePaths? _upperLayerPaths;
-    private readonly FileListener _fileListener = new(new SyncListeningStrategy());
+    private readonly FileListener _fileListener = new(new SyncListeningStrategy(new TextFileManager()));
     private readonly PrimitiveHandler _primitiveHandler = new(new TransportPrimitiveHandlerStrategy());
 
     

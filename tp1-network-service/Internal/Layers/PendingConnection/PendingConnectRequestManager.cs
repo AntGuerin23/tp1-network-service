@@ -9,19 +9,19 @@ namespace tp1_network_service.Internal.Layers.PendingConnection;
 
 internal class PendingConnectRequestManager
 {
-    private const int ConnectResponseTimeoutSeconds = 5;
+    private const int ConnectResponseTimeoutSeconds = 1;
 
     private ConcurrentDictionary<int, Timeout> _pendingConnections = new();
 
-    public void WaitForResponse(int connectionNumber)
+    public void WaitForResponse(ConnectPrimitive primitive)
     {
         var timeout = new Timeout(ConnectResponseTimeoutSeconds);
-        _pendingConnections.TryAdd(connectionNumber, timeout);
+        _pendingConnections.TryAdd(primitive.ConnectionNumber, timeout);
 
         var success = timeout.WaitForTimeout();
         if (!success)
         {
-            Disconnect(connectionNumber);
+            Disconnect(primitive);
         }
     }
 
@@ -36,10 +36,12 @@ internal class PendingConnectRequestManager
         return success;
     }
 
-    private void Disconnect(int connectionNumber)
+    private void Disconnect(ConnectPrimitive primitive)
     {
         TransportLayer.Instance.HandleFromLayer(new PrimitiveBuilder()
-            .SetConnectionNumber(connectionNumber)
+            .SetConnectionNumber(primitive.ConnectionNumber)
+            .SetSourceAddress(primitive.SourceAddress)
+            .SetDestinationAddress(primitive.DestinationAddress)
             .SetType(PrimitiveType.Ind)
             .SetReason(DisconnectReason.Distant)
             .ToDisconnectPrimitive());

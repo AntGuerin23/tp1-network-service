@@ -5,7 +5,7 @@ namespace tp1_network_service.Internal.Layers.Network.DataSending;
 
 internal class DataSender
 {
-    private const int AcknowledgementTimeoutSeconds = 5;
+    private const int AcknowledgementTimeoutSeconds = 1;
     
     private readonly PacketSegmenter _currentPacketSegmenter;
     private readonly Timeout _timeout;
@@ -29,7 +29,7 @@ internal class DataSender
         return success;
     }
 
-    public void Acknowledge()
+    public void CancelTimeout()
     {
         _timeout.CancelTimeout();
     }

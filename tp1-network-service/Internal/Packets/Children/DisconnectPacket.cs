@@ -1,5 +1,6 @@
 using tp1_network_service.Internal.Builder;
 using tp1_network_service.Internal.Enums;
+using tp1_network_service.Internal.Layers.Network;
 using tp1_network_service.Internal.Layers.Transport;
 using tp1_network_service.Internal.Packets.Abstract;
 using tp1_network_service.Internal.Primitives;
@@ -29,11 +30,17 @@ internal class DisconnectPacket : AddressedPacket
 
     public override void Handle()
     {
-        var disconnectPrimitive = new PrimitiveBuilder().SetConnectionNumber(ConnectionNumber)
-            .SetResponseAddress(SourceAddress)
+        var disconnectPrimitive = new PrimitiveBuilder()
+            .SetConnectionNumber(ConnectionNumber)
             .SetType(PrimitiveType.Ind)
+            .SetSourceAddress(SourceAddress)
+            .SetDestinationAddress(DestinationAddress)
             .SetReason(DisconnectReason.Distant)
             .ToDisconnectPrimitive();
+        
+        NetworkLayer.Instance.DataSendingManager.CancelAcknowledgementWait(ConnectionNumber);
+        NetworkLayer.Instance.DataSendingManager.TryDisconnect(ConnectionNumber);
+        
         TransportLayer.Instance.HandleFromLayer(disconnectPrimitive);
     }
 }

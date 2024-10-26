@@ -1,8 +1,10 @@
 using System.Text;
+using System.Threading.Channels;
 using tp1_network_service.External;
 using tp1_network_service.Internal.Builder;
 using tp1_network_service.Internal.Enums;
 using tp1_network_service.Internal.FileManagement;
+using tp1_network_service.Internal.FileManagement.FileManagers;
 using tp1_network_service.Internal.Packets;
 using tp1_network_service.Internal.Packets.Abstract;
 using tp1_network_service.Internal.Packets.Children;
@@ -22,7 +24,7 @@ internal class UserBSimulator
     public void Simulate(CancellationToken cancellationToken, bool enableEdgeCases = true)
     {
         _edgeCasesEnabled = enableEdgeCases;
-        var listener = new FileListener(new SyncListeningStrategy());
+        var listener = new FileListener(new SyncListeningStrategy(new BinaryFileManager()));
         listener.Listen(_filePaths.Input, HandlePacket);
         while (!cancellationToken.IsCancellationRequested) { } 
         listener.Stop();
@@ -54,6 +56,7 @@ internal class UserBSimulator
             ConsoleLogger.DataPacketIgnored(packet.ConnectionNumber);
             return;
         }
+        ConsoleLogger.DataPacketReceived(packet);
         WriteToOutput(BuildDataAckPacket(packet, GetAcknowledgementType(packet.SegInfo.CurrentSegmentNumber)));
     }
 
@@ -92,12 +95,12 @@ internal class UserBSimulator
 
     private void WriteToOutput(Packet packet)
     {
-        FileManager.WriteWithNewLine(packet.Serialize(), _filePaths.Output);
+        new BinaryFileManager().WriteWithNewLine(packet.Serialize(), _filePaths.Output);
     }
 
     private Packet BuildDisconnectPacket(AddressedPacket packet)
     {
-            return new PacketBuilder().SetType(PacketType.Disconnect)
+            return new PacketBuilder().SetType(PacketType.Disconnect).SetConnectionNumber(packet.ConnectionNumber)
             .SetReason(DisconnectReason.Distant)
             .SetDestinationAddress(packet.SourceAddress)
             .SetSourceAddress(packet.DestinationAddress)

@@ -26,4 +26,11 @@ public class SegmentationTests
         var info = new SegmentationInfo(0b01010010);
         Assert.That(info.Serialize(), Is.EqualTo(0b01010010));
     }
+
+    [Test]
+    public void TestSegInfoSerializeAck()
+    {
+        var b = SegmentationInfo.SerializeAcknowledgment(false, 0b010);
+        Assert.That(b, Is.EqualTo(0b01001001));
+    }
 }

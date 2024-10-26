@@ -2,6 +2,7 @@ using tp1_network_service.External;
 using tp1_network_service.Internal;
 using tp1_network_service.Internal.Builder;
 using tp1_network_service.Internal.FileManagement;
+using tp1_network_service.Internal.FileManagement.FileManagers;
 using tp1_network_service.Internal.Packets;
 
 namespace tp1_network_service.Tests;
@@ -24,10 +25,10 @@ public class BSimulationTests
             .SetDestinationAddress(1)
             .SetSourceAddress(2)
             .ToConnectionRequestPacket();
-        FileManager.WriteWithNewLine(packet.Serialize(), "b-input");
+        new BinaryFileManager().WriteWithNewLine(packet.Serialize(), "b-input");
         
         Thread.Sleep(100);
-        var bytes = FileManager.ReadAndDeleteFirstLineOfFile("b-output");
+        var bytes = new BinaryFileManager().ReadAndDeleteFirstLine("b-output");
         Assert.That(bytes, Is.EqualTo(new byte[]{0b00000001, 0b00001111, 0b00000001, 0b00000010}));
         var newPacket = PacketDeserializer.Deserialize(bytes);
         

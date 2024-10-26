@@ -1,3 +1,6 @@
+using System.Text;
+using tp1_network_service.Internal.Packets.Children;
+
 namespace tp1_network_service.Internal.Utils;
 
 internal static class ConsoleLogger
@@ -20,11 +23,16 @@ internal static class ConsoleLogger
 
     public static void DataPacketIgnored(int connectionNumber)
     {
-        Console.WriteLine($"Distant : Data packet ignored from {connectionNumber}."); 
+        Console.WriteLine($"Distant : Data packet ignored for connection #{connectionNumber}."); 
     }
 
     private static void Separator()
     {
         Console.WriteLine("===========================================================================================================================================");
+    }
+
+    public static void DataPacketReceived(DataPacket packet)
+    {
+        Console.WriteLine($"Distant : Received data for connection #{packet.ConnectionNumber} : [{Encoding.UTF8.GetString(packet.Data)}]");
     }
 }

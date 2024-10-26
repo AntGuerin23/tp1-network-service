@@ -1,15 +1,26 @@
 ﻿using tp1_network_service.External;
 
+// Application properties ----------------------------------------------------------
+const bool enableEdgeCases = true;
+const bool readFromConsole = false;
+//-----------------------------------------------------------------------------------
+
 var path = Environment.CurrentDirectory + "/Resources";
-var enableEdgeCases = true;
-var readFromConsole = false;
 var cancellationToken = new CancellationTokenSource();
 var communicationManager = new CommunicationManager();
 
 Start();
-if (readFromConsole) WriteData();
-else Console.ReadLine();
+if (readFromConsole)
+{
+    PromptUserForData();
+}
+else
+{
+    Console.ReadLine();
+}
+
 Stop();
+return;
 
 void Start()
 {
@@ -22,7 +33,7 @@ void Start()
     AppDomain.CurrentDomain.ProcessExit += (_, _) => Stop();
 }
 
-void WriteData()
+void PromptUserForData()
 {
     Thread.Sleep(3000);
     while (true)

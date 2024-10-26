@@ -1,19 +1,15 @@
 using System.Text;
-using System.IO;
 
-namespace tp1_network_service.Internal.FileManagement;
+namespace tp1_network_service.Internal.FileManagement.FileManagers;
 
-internal class FileManager
+public class TextFileManager : IFileManager
 {
-    public const bool EnableLogging = false;
     private static readonly object _fileLock = new();
-    
     private static int _newLineLength = Environment.NewLine.Length;
     
-    public static void WriteWithNewLine(byte[] content, string filePath)
+    public void WriteWithNewLine(byte[] content, string filePath)
     {
         if (!Exists(filePath)) throw new FileNotFoundException("Le fichier n'existe pas");
-        Log(content, filePath);
         lock (_fileLock)
         {
             using (var stream = new FileStream(filePath, FileMode.Append))
@@ -25,14 +21,7 @@ internal class FileManager
 
     }
 
-    private static void Log(byte[] content, string filePath)
-    {
-        if (!EnableLogging) return;
-        var binaryString = string.Join("\n", content.Select(b => Convert.ToString(b, 2).PadLeft(8, '0')));
-        Console.WriteLine($"TO {filePath} :\n{binaryString}");
-    }
-
-    public static byte[] ReadAndDeleteFirstLineOfFile(string filePath)
+    public byte[] ReadAndDeleteFirstLine(string filePath)
     {
         lock (_fileLock)
         {
@@ -70,4 +59,5 @@ internal class FileManager
         }
         return 0;
     }
+
 }

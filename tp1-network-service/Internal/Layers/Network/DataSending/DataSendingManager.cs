@@ -1,27 +1,29 @@
+using System.Collections.Concurrent;
 using tp1_network_service.Internal.Primitives.Children;
 
 namespace tp1_network_service.Internal.Layers.Network.DataSending;
 
 internal class DataSendingManager
 {
-    private readonly Dictionary<int, DataSender> _dataSenders = new();
+    private readonly ConcurrentDictionary<int, DataSender> _dataSenders = new();
     private readonly object _dataSendersLock = new();
 
     public bool StartSendingData(DataPrimitive primitive)
     {
         var sender = new DataSender(primitive);
-        lock (_dataSendersLock)
-        {
-            _dataSenders.Add(primitive.ConnectionNumber, sender);
-        }
+        _dataSenders.TryAdd(primitive.ConnectionNumber, sender);
         return sender.SendData();
     }
     
-    public void AcknowledgeLastPacket(int connectionNumber)
+    public void CancelAcknowledgementWait(int connectionNumber)
     {
-        lock (_dataSendersLock)
-        {
-            _dataSenders[connectionNumber].Acknowledge();
-        }
+        var found = _dataSenders.TryGetValue(connectionNumber, out var sender);
+        if (!found) return;
+        sender!.CancelTimeout();
+    }
+
+    public void TryDisconnect(int connectionNumber)
+    {
+        _dataSenders.TryRemove(connectionNumber, out _);
     }
 }
