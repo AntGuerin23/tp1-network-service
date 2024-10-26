@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tp1-network-service", "tp1-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tp1-network-service.CLI", "tp1-network-service.CLI\tp1-network-service.CLI.csproj", "{8940E51A-4F65-4559-8ABD-A40F5CA91AC9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tp1-network-service.Tests", "tp1-network-service.Tests\tp1-network-service.Tests.csproj", "{F82DDD42-7698-4DDD-B212-8BC746E163EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{8940E51A-4F65-4559-8ABD-A40F5CA91AC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8940E51A-4F65-4559-8ABD-A40F5CA91AC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8940E51A-4F65-4559-8ABD-A40F5CA91AC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F82DDD42-7698-4DDD-B212-8BC746E163EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F82DDD42-7698-4DDD-B212-8BC746E163EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F82DDD42-7698-4DDD-B212-8BC746E163EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F82DDD42-7698-4DDD-B212-8BC746E163EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
