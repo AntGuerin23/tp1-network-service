@@ -1,46 +1,62 @@
-# Nom du Projet
 
-**Simulation de Service Réseau**
+# Projet Réseaux d'Ordinateurs (INF1010)
 
-## Aperçu
+## Introduction
+Ce projet implémente un service connecté de réseau en utilisant **C# avec .NET 8**.  
+Le système simule la communication entre deux entités réseau selon trois phases :  
+- **Établissement de connexion**  
+- **Transfert de données**  
+- **Libération de connexion**
 
-Ce projet simule un service réseau connecté entre deux systèmes utilisant des couches transport et réseau. Il permet de gérer l'établissement de connexions, le transfert de données et la libération de connexions. Le projet est implémenté en C# avec des fichiers simulant les échanges entre les couches.
+## Prérequis
+- **.NET 8 SDK** installé.
+- Un éditeur de code (par exemple : Visual Studio, Visual Studio Code).
+- **Cloner le projet** ou extraire l’archive `.zip` fournie.
 
-## Structure du Dossier (Revalider les structure de fichiers selon la direction du projet)
+## Exécution du Projet
+1. **Compiler et exécuter** :
+   ```bash
+   dotnet run
+   ```
 
-```plaintext
-/ProjetSimulationReseau
-│
-├── /tp1-network-service     # Code source du projet
-│   ├── Program.cs           # Point d'entrée principal
-│   ├── TransportEntity.cs   # Gestion de la couche transport
-│   ├── NetworkEntity.cs     # Gestion de la couche réseau
-│   ├── FileInterface.cs     # Gestion des opérations sur les fichiers
-│   ├── logger.cs            # Gestion des fonctionnalités de loggings des transactions
-│
-├── /tp1-network-service-tests           # Tests unitaires et d'intégration
-│   ├── TestFileInterface.cs
-│   ├── TestTransportEntity.cs
-│   ├── TestNetworkEntity.cs
-│
-├── requirements.md   # Fichiers de specification technique
-└── README.md         # Ce fichier
-```
+   **Important :** Le dossier `/Resources` contenant les fichiers de communication doit se trouver à la racine.
 
-## Liste des classes et fonctionnalité ((Revalider les structure de fichiers selon la direction du projet))
+2. **Configurer le fichier d’entrée** :  
+   Remplissez le fichier `S_LEC.txt` avec les entrées nécessaires, ligne par ligne, pour simuler la communication.
 
-- Enum XYZ : pour lister toute les primitives et type de messages
-- Classe packet : information représentant le message transférer pour cette couche
-- Classe :
-- Classe : 
-- Classe : 
+3. **Sortie des résultats** :  
+   Les résultats seront enregistrés dans le fichier `S_ECR.txt`.
 
-## Commandes pour Exécuter les Tests
-```plaintext
-dotnet test
-```
+4. **Gestion des erreurs** :  
+   En cas d’erreur, la console affichera les détails de l’échec et les informations de la connexion concernée.
 
-## Commande pour Exécuter l'Application
-```plaintext
-dotnet run 
-```
+## Structure du Projet
+- **Library** : Contient les classes nécessaires au fonctionnement.
+- **CLI** : Fichier `Program.cs` qui utilise la bibliothèque.
+- **Tests** : Tests unitaires pour valider certaines classes.
+
+## Fichiers Utilisés
+- `S_LEC.txt` : Entrées simulées provenant de la couche transport.
+- `S_ECR.txt` : État final de la table des connexions.
+- `L_LEC.txt` : Fichier FIFO pour la communication liaison-transport.
+- `L_ECR.txt` : Fichier FIFO pour la communication transport-liaison.
+
+## Spécifications Techniques
+
+### Spécification 1
+Le projet devait vérifier le **numéro d’adresse source** pour déterminer si le système B doit répondre aux paquets.  
+Puisque l’adresse source n'est pas transférée dans le paquet, nous utilisons le **modulo du numéro de connexion** pour implémenter cette fonctionnalité.
+
+### Spécification 2
+Le fichier `L_LEC.txt` fonctionne comme un **FIFO** pour gérer la communication entre les systèmes.  
+Les lignes ajoutées sont traitées par un thread dédié, et les résultats sont affichés dans la console.
+
+## Auteurs
+- **Mathyas Lefebvre**  
+- **Julien Deguire**  
+- **Antoine Guérin**  
+- **Samuel Tessier**
+- **Simon Lavigne**
+
+## Date de Remise
+**25 octobre 2024**
